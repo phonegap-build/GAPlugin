@@ -1,65 +1,81 @@
 package com.adobe.plugins;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
-import org.apache.cordova.api.PluginResult.Status;
-
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 
-public class GAPlugin extends Plugin {
-    @Override
-    public PluginResult execute(String action, JSONArray args, String callbackId) {
-    	
-    	GoogleAnalyticsTracker tracker = GoogleAnalyticsTracker.getInstance();
-        PluginResult result = null;
+import com.google.analytics.tracking.android.GAServiceManager;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Tracker;
 
-        if (action.equals("initGA"))
-        {
+public class GAPlugin extends CordovaPlugin {
+	@Override
+	public boolean execute(String action, JSONArray args, CallbackContext callback) {
+		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
+		Tracker tracker = ga.getDefaultTracker(); 
+
+		if (action.equals("initGA")) {
 			try {
-				tracker.startNewSession(args.getString(0), args.getInt(1), this.cordova.getActivity());
-				result = new PluginResult(Status.OK, "initGA - id = "+args.getString(0)+"; interval = "+args.getInt(1)+" seconds");
-			} catch (Exception e) {
-				result = new PluginResult(Status.JSON_EXCEPTION);
+				tracker = ga.getTracker(args.getString(0));
+				GAServiceManager.getInstance().setDispatchPeriod(args.getInt(1));
+				ga.setDefaultTracker(tracker);
+				callback.success("initGA - id = " + args.getString(0) + "; interval = " + args.getInt(1) + " seconds");
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
 			}
-        }
-        else if (action.equals("exitGA"))
-        {
+		} else if (action.equals("exitGA")) {
 			try {
-				tracker.stopSession();
-				result = new PluginResult(Status.OK, "exitGA");
-			} catch (Exception e) {
-				result = new PluginResult(Status.JSON_EXCEPTION);
+				GAServiceManager.getInstance().dispatch();
+				callback.success("exitGA");
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
 			}
-        }
-        else if (action.equals("trackEvent"))
-        {
+		} else if (action.equals("trackEvent")) {
 			try {
-				tracker.trackEvent(args.getString(0), args.getString(1), args.getString(2), args.getInt(3));
-				result = new PluginResult(Status.OK, "trackEvent - category = "+args.getString(0)+"; action = "+args.getString(1)+"; label = "+args.getString(2)+"; value = "+args.getInt(3));
-			} catch (Exception e) {
-				result = new PluginResult(Status.JSON_EXCEPTION);
+				tracker.sendEvent(args.getString(0), args.getString(1), args.getString(2), args.getLong(3));
+				callback.success("trackEvent - category = " + args.getString(0) + "; action = " + args.getString(1) + "; label = " + args.getString(2) + "; value = " + args.getInt(3));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
 			}
-        }
-        else if (action.equals("trackPage"))
-        {
+		} else if (action.equals("trackPage")) {
 			try {
-				tracker.trackPageView(args.getString(0));
-				result = new PluginResult(Status.OK, "trackPage - url = "+args.getString(0));
-			} catch (Exception e) {
-				result = new PluginResult(Status.JSON_EXCEPTION);
+				tracker.sendView(args.getString(0));
+				callback.success("trackPage - url = " + args.getString(0));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
 			}
-        }
-        else if (action.equals("setVariable"))
-        {
+		} else if (action.equals("setVariable")) {
 			try {
-				tracker.setCustomVar(args.getInt(2), args.getString(0), args.getString(1));
-				result = new PluginResult(Status.OK, "setVariable passed - index = "+ args.getInt(2)+"; key = "+args.getString(0)+"; value = "+args.getString(1));
-			} catch (Exception e) {
-				result = new PluginResult(Status.JSON_EXCEPTION);
+				tracker.setCustomDimension(args.getInt(2), args.getString(1));
+				callback.success("setVariable passed - index = " + args.getInt(2) + "; key = " + args.getString(0) + "; value = " + args.getString(1));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
 			}
-        }
-        return result;
-    }
- }
+		}
+		else if (action.equals("setDimension")) {
+			try {
+				tracker.setCustomDimension(args.getInt(0), args.getString(1));
+				callback.success("setDimension passed - index = " + args.getInt(0) + "; value = " + args.getString(1));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
+		else if (action.equals("setMetric")) {
+			try {
+				tracker.setCustomMetric(args.getInt(0), args.getLong(1));
+				callback.success("setVariable passed - index = " + args.getInt(2) + "; key = " + args.getString(0) + "; value = " + args.getString(1));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
+		return false;
+	}
+}
+
