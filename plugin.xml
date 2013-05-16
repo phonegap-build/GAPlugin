@@ -34,15 +34,15 @@
 			<plugin name="GAPlugin" value="GAPlugin"/>
 		</config-file>  
                     
-        <source-file src="GAPlugin.m" />
-		<source-file src="libGoogleAnalytics.a" />
+        <source-file src="src/ios/GAPlugin.m" />
+		<source-file src="src/ios/libGoogleAnalytics.a" />
 		
-        <header-file src="GAITransactionItem.h" />
-        <header-file src="GAITransaction.h" />
-        <header-file src="GAITracker.h" />
-        <header-file src="GAITrackedViewController.h" />
-        <header-file src="GAI.h" />
-        <header-file src="GAPlugin.h" />
+        <header-file src="src/ios/GAITransactionItem.h" />
+        <header-file src="src/ios/GAITransaction.h" />
+        <header-file src="src/ios/GAITracker.h" />
+        <header-file src="src/ios/GAITrackedViewController.h" />
+        <header-file src="src/ios/GAI.h" />
+        <header-file src="src/ios/GAPlugin.h" />
 		
         <framework src="libGoogleAnalytics.a" />
         <framework src="CoreData.framework" />
