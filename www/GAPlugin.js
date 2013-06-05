@@ -41,7 +41,7 @@
     };
     
     GAPlugin.prototype.exit = function(success, fail) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA');
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };
  
     if (cordovaRef)
