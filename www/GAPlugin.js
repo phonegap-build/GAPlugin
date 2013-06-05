@@ -44,12 +44,15 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA');
     };
  
-    cordovaRef.addConstructor(function() {
-        if(!window.plugins) {
-            window.plugins = {};
-        }
-        if(!window.plugins.gaPlugin) {
-            window.plugins.gaPlugin = new GAPlugin();
-        }
-    });
+    if (cordovaRef)
+    {
+        cordovaRef.addConstructor(function() {
+            if(!window.plugins) {
+                window.plugins = {};
+            }
+            if(!window.plugins.gaPlugin) {
+                window.plugins.gaPlugin = new GAPlugin();
+            }
+        });
+    }
 })(); /* End of Temporary Scope. */
