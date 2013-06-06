@@ -23,6 +23,8 @@
     //[GAI sharedInstance].debug = YES;
     // Create tracker instance.
     [[GAI sharedInstance] trackerWithTrackingId:accountID];
+    // Set the appVersion equal to the CFBundleVersion
+    [GAI sharedInstance].defaultTracker.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     inited = YES;
     
     [self successWithMessage:[NSString stringWithFormat:@"initGA: accountID = %@; Interval = %d seconds",accountID, dispatchPeriod] toID:callbackId];
