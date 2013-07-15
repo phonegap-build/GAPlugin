@@ -7,8 +7,10 @@
     //
     // id = the GA account ID of the form 'UA-00000000-0'
     // period = the minimum interval for transmitting tracking events if any exist in the queue
-    GAPlugin.prototype.init = function(success, fail, id, period) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'initGA', [id, period]);
+    // debug = Should GA set to debug mode? true/false
+    GAPlugin.prototype.init = function(success, fail, id, period, debug) {
+        debug = debug || false;
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'initGA', [id, period, debug]);
     };
 
     // log an event
@@ -42,6 +44,25 @@
     
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
+    };
+    
+    /**
+     * GA Ecommerce Transaction tracking
+     * 
+     * @param {type} success
+     * @param {type} fail
+     * @param {type} transId    Unique transaction id
+     * @param {type} orderTotal Order total
+     * @param {type} items      JSON array
+     * <pre>
+     * [{sku: <string>, name: <string>, price: <number>, quantity: <number>, category:<string>}]
+     * </pre>
+     * @returns {@exp;cordovaRef@call;exec}
+     * 
+     * @author Gihan S <gihanshp@gmail.com>
+     */
+    GAPlugin.prototype.trackTransaction = function(success, fail, transId, orderTotal, items) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [transId, orderTotal, items]);
     };
  
     if (cordovaRef)

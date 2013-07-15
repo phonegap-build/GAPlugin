@@ -3,23 +3,32 @@ package com.adobe.plugins;
 import org.apache.cordova.api.CallbackContext;
 import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.google.analytics.tracking.android.GAServiceManager;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
+import com.google.analytics.tracking.android.Transaction;
+import com.google.analytics.tracking.android.Transaction.*;
 
 public class GAPlugin extends CordovaPlugin {
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
-		Tracker tracker = ga.getDefaultTracker(); 
+		Tracker tracker = ga.getDefaultTracker();
 
 		if (action.equals("initGA")) {
 			try {
 				tracker = ga.getTracker(args.getString(0));
 				GAServiceManager.getInstance().setDispatchPeriod(args.getInt(1));
 				ga.setDefaultTracker(tracker);
-				callback.success("initGA - id = " + args.getString(0) + "; interval = " + args.getInt(1) + " seconds");
+				
+				// set debug mode
+				if(args.getBoolean(2)){
+					ga.setDebug(true);
+				}
+				
+				callback.success("initGA - id = " + args.getString(0) + "; interval = " + args.getInt(1) + " seconds; "+" isDebugEnabled = "+ga.isDebugEnabled());
 				return true;
 			} catch (final Exception e) {
 				callback.error(e.getMessage());
@@ -75,6 +84,36 @@ public class GAPlugin extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
+		else if (action.equals("trackTransaction")) {
+			try {
+				Transaction trans = new Transaction.Builder(
+						args.getString(0), 
+						args.getLong(1)
+				)
+				.setShippingCostInMicros(0)
+				.build();
+				
+				JSONArray items = args.getJSONArray(2);
+				
+				for(int i=0; i<items.length(); i++){
+					JSONObject item = items.getJSONObject(i);
+					trans.addItem(new Item.Builder(
+							item.getString("sku"), 
+							item.getString("name"), 
+							item.getLong("price"), 
+							item.getLong("quantity"))
+					.setProductCategory(item.getString("category"))
+					.build());
+				}
+				tracker.sendTransaction(trans);
+				
+				callback.success("trackTransaction - transactionId = " + args.getString(0) + "; orderTotal = " + args.getLong(1) + "; items = " + args.getJSONArray(2).toString());
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
+
 		return false;
 	}
 }
