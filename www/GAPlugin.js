@@ -54,6 +54,7 @@
      * @param {type} transId    Unique transaction id
      * @param {type} orderTotal Order total
      * @param {type} items      JSON array
+     * @param {type} currency   Currency string
      * <pre>
      * [{sku: <string>, name: <string>, price: <number>, quantity: <number>, category:<string>}]
      * </pre>
@@ -61,8 +62,8 @@
      * 
      * @author Gihan S <gihanshp@gmail.com>
      */
-    GAPlugin.prototype.trackTransaction = function(success, fail, transId, orderTotal, items) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [transId, orderTotal, items]);
+    GAPlugin.prototype.trackTransaction = function(success, fail, transId, orderTotal, items, currency) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [transId, orderTotal, currency, items]);
     };
  
     if (cordovaRef)
