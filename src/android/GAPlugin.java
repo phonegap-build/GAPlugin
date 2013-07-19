@@ -91,9 +91,10 @@ public class GAPlugin extends CordovaPlugin {
 						args.getLong(1)
 				)
 				.setShippingCostInMicros(0)
+				.setCurrencyCode(args.getString(2))
 				.build();
 				
-				JSONArray items = args.getJSONArray(2);
+				JSONArray items = args.getJSONArray(3);
 				
 				for(int i=0; i<items.length(); i++){
 					JSONObject item = items.getJSONObject(i);

@@ -99,13 +99,15 @@
     else
         [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
+
+
 - (void) trackTransaction:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
-    NSString        *callbackId = [arguments pop];
-    NSString       *transId = [[arguments objectAtIndex:0] stringValue];
-    NSInteger       orderTotal = [[arguments objectAtIndex:1] intValue];
-    //NSArray         *items = [arguments objectAtIndex:2];
-    
+    NSString  *callbackId = [arguments pop];
+    NSString  *transId = [arguments objectAtIndex:0];
+    int64_t   orderTotal = (int64_t)([[arguments objectAtIndex:1] doubleValue] * 1000000);
+	NSString  *currencyCode = [arguments objectAtIndex:2]; // Not yet available in iOS GA SDK
+    NSArray   *items = [arguments objectAtIndex:3];
     
     if(inited){
         NSError *error = nil;
@@ -113,32 +115,32 @@
         [GAITransaction transactionWithId:transId            // (NSString) Transaction ID, should be unique.
                           withAffiliation:@"In-App Store"];       // (NSString) Affiliation
         transaction.shippingMicros = (int64_t)(0);                   // (int64_t) Total shipping (in micros)
-        transaction.revenueMicros = (int64_t)(orderTotal);       // (int64_t) Total revenue (in micros)
+        transaction.revenueMicros = (orderTotal);       // (int64_t) Total revenue (in micros)
         
-        NSDictionary *items = [arguments objectAtIndex:2];
         for (NSDictionary *item in items ){
             NSString* sku = [item objectForKey:@"sku"];
             NSString* name = [item objectForKey:@"name"];
             NSString* category = [item objectForKey:@"category"];
-            int64_t* price = [item objectForKey:@"price"];
-            NSInteger* quantity = [item objectForKey:@"quantity"];
+            int64_t price = (int64_t)([[item objectForKey:@"price"] doubleValue] * 1000000);
+            NSInteger quantity = [[item objectForKey:@"quantity"] integerValue];
             
-            
-            [transaction addItemWithSKU:sku                         // (NSString) Product SKU
-                                   name:name             // (NSString) Product name
-                               category:category               // (NSString) Product category
-                            priceMicros:price        // (int64_t)  Product price (in micros)
-                               quantity:quantity];                              // (NSInteger)  Product quantity
+            [transaction addItemWithCode:sku        // (NSString) Product SKU
+                                   name:name        // (NSString) Product name
+                               category:category    // (NSString) Product category
+                            priceMicros:price       // (int64_t)  Product price (in micros)
+                               quantity:quantity];  // (NSInteger)  Product quantity
         }
         
         BOOL result = [[GAI sharedInstance].defaultTracker sendTransaction:transaction]; // Send the transaction
         if(result)
-            [self successWithMessage:[NSString stringWithFormat:@"trackTransaction: transactionId = %@, orderTotal = %d, items = %@;", transId, orderTotal, items] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"trackTransaction: transactionId = %@ OK", transId] toID:callbackId];
         else
-            [self failWithMessage:@"setVariable failed" toID:callbackId withError:error];
-    }else{
+            [self failWithMessage:@"trackTransaction failed" toID:callbackId withError:error];
+    } else {
         [self failWithMessage:@"trackTransaction failed - not initialized" toID:callbackId withError:nil];
     }
+    
+    [self failWithMessage:@"trackTransaction not implemented yet" toID:callbackId withError:nil];
 }
 
 -(void)successWithMessage:(NSString *)message toID:(NSString *)callbackID
