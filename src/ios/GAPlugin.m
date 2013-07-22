@@ -100,6 +100,46 @@
         [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
 
+- (void) setDimension:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSString            *callbackId = [arguments pop];
+    NSInteger           index = [[arguments objectAtIndex:0] intValue];
+    NSString            *value = [arguments objectAtIndex:1];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index dimension:value];
+        
+        if (result)
+    		[self successWithMessage:[NSString stringWithFormat:@"setDimension: index = %d, value = %@;", index, value] toID:callbackId];
+        else
+            [self failWithMessage:@"setDimension failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"setDimension failed - not initialized" toID:callbackId withError:nil];
+}
+
+- (void) setMetric:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSString    *callbackId = [arguments pop];
+    NSInteger   index = [[arguments objectAtIndex:0] intValue];
+    NSNumber    *value = [arguments objectAtIndex:1];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index metric:value];
+        
+        if (result)
+    		[self successWithMessage:[NSString stringWithFormat:@"setMetric: index = %d, value = %@;", index, value] toID:callbackId];
+        else
+            [self failWithMessage:@"setMetric failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
+}
+
 
 - (void) trackTransaction:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
