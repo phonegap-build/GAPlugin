@@ -78,7 +78,7 @@ public class GAPlugin extends CordovaPlugin {
 		else if (action.equals("setMetric")) {
 			try {
 				tracker.setCustomMetric(args.getInt(0), args.getLong(1));
-				callback.success("setVariable passed - index = " + args.getInt(2) + "; key = " + args.getString(0) + "; value = " + args.getString(1));
+				callback.success("setMetric passed - index = " + args.getInt(2) + "; key = " + args.getString(0) + "; value = " + args.getString(1));
 				return true;
 			} catch (final Exception e) {
 				callback.error(e.getMessage());

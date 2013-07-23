@@ -42,6 +42,29 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
     };
     
+    // Set a custom dimension. The variable set is included with
+    // the next event only. If there is an existing custom dimension at the specified
+    // index, it will be overwritten by this one.
+    //
+    // value = the value of the dimension you are logging
+    // index = the numerical index of the dimension to which this variable will be assigned (1 - 20)
+    //  Standard accounts support up to 20 custom dimensions.
+    GAPlugin.prototype.setDimension = function (success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setDimension', [index, value]);
+    };
+    
+    // Set a custom metric. The variable set is included with
+    // the next event only. If there is an existing custom metric at the specified
+    // index, it will be overwritten by this one.
+    //
+    // value = the value of the metric you are logging
+    // index = the numerical index of the metric to which this variable will be assigned (1 - 20)
+    //  Standard accounts support up to 20 custom metrics.
+    GAPlugin.prototype.setMetric = function (success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setMetric', [index, value]);
+    };
+
+
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };
