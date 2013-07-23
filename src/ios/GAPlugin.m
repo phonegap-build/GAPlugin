@@ -100,6 +100,89 @@
         [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
 
+- (void) setDimension:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSString            *callbackId = [arguments pop];
+    NSInteger           index = [[arguments objectAtIndex:0] intValue];
+    NSString            *value = [arguments objectAtIndex:1];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index dimension:value];
+        
+        if (result)
+    		[self successWithMessage:[NSString stringWithFormat:@"setDimension: index = %d, value = %@;", index, value] toID:callbackId];
+        else
+            [self failWithMessage:@"setDimension failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"setDimension failed - not initialized" toID:callbackId withError:nil];
+}
+
+- (void) setMetric:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSString    *callbackId = [arguments pop];
+    NSInteger   index = [[arguments objectAtIndex:0] intValue];
+    NSNumber    *value = [arguments objectAtIndex:1];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index metric:value];
+        
+        if (result)
+    		[self successWithMessage:[NSString stringWithFormat:@"setMetric: index = %d, value = %@;", index, value] toID:callbackId];
+        else
+            [self failWithMessage:@"setMetric failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
+}
+
+
+- (void) trackTransaction:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    NSString  *callbackId = [arguments pop];
+    NSString  *transId = [arguments objectAtIndex:0];
+    int64_t   orderTotal = (int64_t)([[arguments objectAtIndex:1] doubleValue] * 1000000);
+	NSString  *currencyCode = [arguments objectAtIndex:2]; // Not yet available in iOS GA SDK
+    NSArray   *items = [arguments objectAtIndex:3];
+    
+    if(inited){
+        NSError *error = nil;
+        GAITransaction *transaction =
+        [GAITransaction transactionWithId:transId            // (NSString) Transaction ID, should be unique.
+                          withAffiliation:@"In-App Store"];       // (NSString) Affiliation
+        transaction.shippingMicros = (int64_t)(0);                   // (int64_t) Total shipping (in micros)
+        transaction.revenueMicros = (orderTotal);       // (int64_t) Total revenue (in micros)
+        
+        for (NSDictionary *item in items ){
+            NSString* sku = [item objectForKey:@"sku"];
+            NSString* name = [item objectForKey:@"name"];
+            NSString* category = [item objectForKey:@"category"];
+            int64_t price = (int64_t)([[item objectForKey:@"price"] doubleValue] * 1000000);
+            NSInteger quantity = [[item objectForKey:@"quantity"] integerValue];
+            
+            [transaction addItemWithCode:sku        // (NSString) Product SKU
+                                   name:name        // (NSString) Product name
+                               category:category    // (NSString) Product category
+                            priceMicros:price       // (int64_t)  Product price (in micros)
+                               quantity:quantity];  // (NSInteger)  Product quantity
+        }
+        
+        BOOL result = [[GAI sharedInstance].defaultTracker sendTransaction:transaction]; // Send the transaction
+        if(result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackTransaction: transactionId = %@ OK", transId] toID:callbackId];
+        else
+            [self failWithMessage:@"trackTransaction failed" toID:callbackId withError:error];
+    } else {
+        [self failWithMessage:@"trackTransaction failed - not initialized" toID:callbackId withError:nil];
+    }
+    
+    [self failWithMessage:@"trackTransaction not implemented yet" toID:callbackId withError:nil];
+}
+
 -(void)successWithMessage:(NSString *)message toID:(NSString *)callbackID
 {
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
