@@ -17,16 +17,16 @@
     // eventAction = The event action. This parameter is required to be non-empty.
     // eventLabel = The event label. This parameter may be a blank string to indicate no label.
     // eventValue = The event value. This parameter may be -1 to indicate no value.
-    GAPlugin.prototype.trackEvent = function(success, fail, category, eventAction, eventLabel, eventValue) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackEvent', [category, eventAction, eventLabel, eventValue]);
+    GAPlugin.prototype.sendEvent = function(success, fail, category, eventAction, eventLabel, eventValue) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendEvent', [category, eventAction, eventLabel, eventValue]);
     };
 
 
     // log a page view
     //
     // pageURL = the URL of the page view
-    GAPlugin.prototype.trackPage = function(success, fail, pageURL) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackPage', [pageURL]);
+    GAPlugin.prototype.sendView = function(success, fail, pageURL) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendView', [pageURL]);
     };
 
     // Set a custom variable. The variable set is included with
@@ -36,10 +36,18 @@
     // value = the value of the variable you are logging
     // index = the numerical index of the dimension to which this variable will be assigned (1 - 20)
     //  Standard accounts support up to 20 custom dimensions.
-    GAPlugin.prototype.setVariable = function(success, fail, index, value) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
+    GAPlugin.prototype.setCustom = function(success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setCustom', [index, value]);
+    };
+
+    GAPlugin.prototype.sendTiming = function(success, fail, category, time, name, label) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendTiming', [category, time, name, label]);
     };
     
+    GAPlugin.prototype.sendException = function(success, fail, message, fatal) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendException', [message, fatal]);
+    };
+
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };
