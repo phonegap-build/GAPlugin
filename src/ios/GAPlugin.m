@@ -42,7 +42,7 @@
     [self successWithMessage:@"exitGA" toID:callbackId];
 }
 
-- (void)trackEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+- (void)sendEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
     NSString *callbackId = [arguments pop];
     NSString *category = [arguments objectAtIndex:0];
@@ -56,20 +56,20 @@
         BOOL result = [[[GAI sharedInstance] defaultTracker] sendEventWithCategory:category withAction:eventAction withLabel:eventLabel withValue:[NSNumber numberWithInt:eventValue]];
         if (result)
         {
-            [self successWithMessage:[NSString stringWithFormat:@"trackEvent: category = %@; action = %@; label = %@; value = %d", category, eventAction, eventLabel, eventValue] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"sendEvent: category = %@; action = %@; label = %@; value = %d", category, eventAction, eventLabel, eventValue] toID:callbackId];
         }
         else
         {
-            [self failWithMessage:@"trackEvent failed" toID:callbackId withError:error];
+            [self failWithMessage:@"sendEvent failed" toID:callbackId withError:error];
         }
     }
     else
     {
-        [self failWithMessage:@"trackEvent failed - not initialized" toID:callbackId withError:nil];
+        [self failWithMessage:@"sendEvent failed - not initialized" toID:callbackId withError:nil];
     }
 }
 
-- (void)trackPage:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+- (void)sendView:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
     NSString *callbackId = [arguments pop];
     NSString *pageURL = [arguments objectAtIndex:0];
@@ -81,20 +81,20 @@
 
         if (result)
         {
-            [self successWithMessage:[NSString stringWithFormat:@"trackPage: url = %@", pageURL] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"sendView: url = %@", pageURL] toID:callbackId];
         }
         else
         {
-            [self failWithMessage:@"trackPage failed" toID:callbackId withError:error];
+            [self failWithMessage:@"sendView failed" toID:callbackId withError:error];
         }
     }
     else
     {
-        [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil];
+        [self failWithMessage:@"sendView failed - not initialized" toID:callbackId withError:nil];
     }
 }
 
-- (void)setVariable:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+- (void)setCustom:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
     NSString *callbackId = [arguments pop];
     NSInteger index = [[arguments objectAtIndex:0] intValue];
@@ -107,16 +107,16 @@
 
         if (result)
         {
-            [self successWithMessage:[NSString stringWithFormat:@"setVariable: index = %d, value = %@;", index, value] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"setCustom: index = %d, value = %@;", index, value] toID:callbackId];
         }
         else
         {
-            [self failWithMessage:@"setVariable failed" toID:callbackId withError:error];
+            [self failWithMessage:@"setCustom failed" toID:callbackId withError:error];
         }
     }
     else
     {
-        [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
+        [self failWithMessage:@"setCustom failed - not initialized" toID:callbackId withError:nil];
     }
 }
 
@@ -154,18 +154,18 @@
 - (void)sendException:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
     NSString *callbackId = [arguments pop];
-    
+
     NSString *message = [arguments objectAtIndex:0];
     Boolean fatal = [[arguments objectAtIndex:1] boolValue];
 
-    
-    
-    
+
+
+
     if (inited)
     {
         NSError *error = nil;
         BOOL result = [[[GAI sharedInstance] defaultTracker] sendException:fatal withDescription:message];
-        
+
         if (result)
         {
             [self successWithMessage:[NSString stringWithFormat:@"sendException: message = %@;", message] toID:callbackId];
