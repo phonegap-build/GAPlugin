@@ -25,8 +25,8 @@
     // log a page view
     //
     // pageURL = the URL of the page view
-    GAPlugin.prototype.sendEvent = function(success, fail, pageURL) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendEvent', [pageURL]);
+    GAPlugin.prototype.sendView = function(success, fail, pageURL) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendView', [pageURL]);
     };
 
     // Set a custom variable. The variable set is included with
