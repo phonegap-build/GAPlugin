@@ -48,15 +48,21 @@
     NSString *category = [arguments objectAtIndex:0];
     NSString *eventAction = [arguments objectAtIndex:1];
     NSString *eventLabel = [arguments objectAtIndex:2];
-    NSInteger eventValue = [[arguments objectAtIndex:3] intValue];
+    NSNumber *eventValue = nil;
+    
+    if([arguments objectAtIndex:3] != [NSNull null])
+    {
+        [NSNumber numberWithLong:[[arguments objectAtIndex:3] longValue]];
+    }
+    
     NSError *error = nil;
 
     if (inited)
     {
-        BOOL result = [[[GAI sharedInstance] defaultTracker] sendEventWithCategory:category withAction:eventAction withLabel:eventLabel withValue:[NSNumber numberWithInt:eventValue]];
+        BOOL result = [[[GAI sharedInstance] defaultTracker] sendEventWithCategory:category withAction:eventAction withLabel:eventLabel withValue:eventValue];
         if (result)
         {
-            [self successWithMessage:[NSString stringWithFormat:@"sendEvent: category = %@; action = %@; label = %@; value = %d", category, eventAction, eventLabel, eventValue] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"sendEvent: category = %@; action = %@; label = %@; value = %@", category, eventAction, eventLabel, eventValue] toID:callbackId];
         }
         else
         {
