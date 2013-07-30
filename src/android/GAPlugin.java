@@ -75,6 +75,15 @@ public class GAPlugin extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
+		else if (action.equals("sendTiming")) {
+            try {
+                tracker.sendTiming(args.getString(0), args.getInt(1), args.getString(2), args.getString(3));
+                callback.success("sendTiming passed - category = " + args.getString(0) + "; time = " + args.getInt(1) + "; name = " + args.getString(2) + "; label = " + args.getString(3));
+                return true;
+            } catch (final Exception e) {
+                callback.error(e.getMessage());
+            }
+        }
 		return false;
 	}
 }

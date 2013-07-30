@@ -19,5 +19,5 @@
 - (void) trackEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) trackPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) setVariable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-
+- (void)sendTiming:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
 @end

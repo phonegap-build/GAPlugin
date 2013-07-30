@@ -100,6 +100,37 @@
         [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
 
+- (void)sendTiming:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    NSString *callbackId = [arguments pop];
+
+    NSString *category = [arguments objectAtIndex:0];
+    NSInteger time = [[arguments objectAtIndex:1] intValue];
+    NSString *name = [arguments objectAtIndex:2];
+    NSString *label = [arguments objectAtIndex:3];
+
+
+
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL result = [[[GAI sharedInstance] defaultTracker] sendTimingWithCategory:category withValue:time withName:name withLabel:label];
+
+        if (result)
+        {
+            [self successWithMessage:[NSString stringWithFormat:@"sendTimingWithCategory: category = %@, time = %d, name = %@, label = %@;", category, time, name, label] toID:callbackId];
+        }
+        else
+        {
+            [self failWithMessage:@"sendTimingWithCategory failed" toID:callbackId withError:error];
+        }
+    }
+    else
+    {
+        [self failWithMessage:@"sendTimingWithCategory failed - not initialized" toID:callbackId withError:nil];
+    }
+}
+
 -(void)successWithMessage:(NSString *)message toID:(NSString *)callbackID
 {
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
