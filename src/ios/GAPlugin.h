@@ -16,8 +16,9 @@
 
 - (void) initGA:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) exitGA: (NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) trackEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) trackPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) setVariable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void)sendTiming:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
+- (void) sendEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) sendView:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) setCustom:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) sendTiming:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
+- (void) sendException:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
 @end
