@@ -9,12 +9,8 @@
     <keywords>cordova,google,analytics</keywords>
     
     <js-module src="www/GAPlugin.js" name="GAPlugin">
-        <clobbers target="plugins.GAPlugin" />
+        <clobbers target="plugins.analytics" />
     </js-module>
-
-    <engines>
-        <engine name="cordova" version=">=3.0.0" />
-    </engines>
 
     <!-- android -->
     <platform name="android">

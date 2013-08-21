@@ -14,18 +14,19 @@ var exec = require("cordova/exec");
  *
  * @returns {GAPlugin}
  */
-var GAPlugin = { };
-
-GAPlugin.available = false;
+function GAPlugin()
+{
+    this.available = false;    
+}
 
 // initialize google analytics with an account ID and the min number of seconds between posting
 //
 // id = the GA account ID of the form 'UA-00000000-0'
 // period = the minimum interval for transmitting tracking events if any exist in the queue
-GAPlugin.init = function(success, fail, id, period)
+GAPlugin.prototype.init = function(success, fail, id, period)
 {
-    success = success || GAPlugin.onSuccess;
-    fail = fail || GAPlugin.onFail;
+    success = success || this.onSuccess;
+    fail = fail || this.onFail;
     return exec(success, fail, 'GAPlugin', 'initGA', [id, period]);
 };
 
@@ -35,10 +36,10 @@ GAPlugin.init = function(success, fail, id, period)
 // eventAction = The event action. This parameter is required to be non-empty.
 // eventLabel = The event label. This parameter may be a blank string to indicate no label.
 // eventValue = The event value. This parameter may be -1 to indicate no value.
-GAPlugin.trackEvent = function(success, fail, category, eventAction, eventLabel, eventValue)
+GAPlugin.prototype.trackEvent = function(success, fail, category, eventAction, eventLabel, eventValue)
 {
-    success = success || GAPlugin.onSuccess;
-    fail = fail || GAPlugin.onFail;
+    success = success || this.onSuccess;
+    fail = fail || this.onFail;
     return exec(success, fail, 'GAPlugin', 'trackEvent', [category, eventAction, eventLabel, eventValue]);
 };
 
@@ -46,10 +47,10 @@ GAPlugin.trackEvent = function(success, fail, category, eventAction, eventLabel,
 // log a page view
 //
 // pageURL = the URL of the page view
-GAPlugin.trackPage = function(success, fail, pageURL)
+GAPlugin.prototype.trackPage = function(success, fail, pageURL)
 {
-    success = success || GAPlugin.onSuccess;
-    fail = fail || GAPlugin.onFail;
+    success = success || this.onSuccess;
+    fail = fail || this.onFail;
     return exec(success, fail, 'GAPlugin', 'trackPage', [pageURL]);
 };
 
@@ -60,32 +61,32 @@ GAPlugin.trackPage = function(success, fail, pageURL)
 // value = the value of the variable you are logging
 // index = the numerical index of the dimension to which this variable will be assigned (1 - 20)
 //  Standard accounts support up to 20 custom dimensions.
-GAPlugin.setVariable = function(success, fail, index, value)
+GAPlugin.prototype.setVariable = function(success, fail, index, value)
 {
-    success = success || GAPlugin.onSuccess;
-    fail = fail || GAPlugin.onFail;
+    success = success || this.onSuccess;
+    fail = fail || this.onFail;
     return exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
 };
 
-GAPlugin.exit = function(success, fail)
+GAPlugin.prototype.exit = function(success, fail)
 {
-    success = success || GAPlugin.onSuccess;
-    fail = fail || GAPlugin.onFail;
+    success = success || this.onSuccess;
+    fail = fail || this.onFail;
     return exec(success, fail, 'GAPlugin', 'exitGA', []);
 };
 
-GAPlugin.onSuccess = function (data)
+GAPlugin.prototype.onSuccess = function (data)
 {
     console.log('GAPlugin::onSuccess');
     if (data)
         console.log(data);
 };
 
-GAPlugin.onFail = function (data)
+GAPlugin.prototype.onFail = function (data)
 {
     console.log('GAPlugin::onFail');
     if (data)
         console.log(data);
 };
 
-module.exports = GAPlugin;
+module.exports = new GAPlugin();
