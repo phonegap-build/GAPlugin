@@ -21,8 +21,12 @@ cordova.define("cordova/plugin/GAPlugin",
          */
         function GAPlugin() { }
 
+        GAPlugin.prototype.available = false;
+
         GAPlugin.prototype.testGA = function(success, fail)
         {
+            success = success || this.onSuccess;
+            fail = fail || this.onFail;
             return exec(success, fail, 'GAPlugin', 'test', []);
         };
 
@@ -32,6 +36,8 @@ cordova.define("cordova/plugin/GAPlugin",
         // period = the minimum interval for transmitting tracking events if any exist in the queue
         GAPlugin.prototype.init = function(success, fail, id, period)
         {
+            success = success || this.onSuccess;
+            fail = fail || this.onFail;
             return exec(success, fail, 'GAPlugin', 'initGA', [id, period]);
         };
 
@@ -43,6 +49,8 @@ cordova.define("cordova/plugin/GAPlugin",
         // eventValue = The event value. This parameter may be -1 to indicate no value.
         GAPlugin.prototype.trackEvent = function(success, fail, category, eventAction, eventLabel, eventValue)
         {
+            success = success || this.onSuccess;
+            fail = fail || this.onFail;
             return exec(success, fail, 'GAPlugin', 'trackEvent', [category, eventAction, eventLabel, eventValue]);
         };
 
@@ -52,6 +60,8 @@ cordova.define("cordova/plugin/GAPlugin",
         // pageURL = the URL of the page view
         GAPlugin.prototype.trackPage = function(success, fail, pageURL)
         {
+            success = success || this.onSuccess;
+            fail = fail || this.onFail;
             return exec(success, fail, 'GAPlugin', 'trackPage', [pageURL]);
         };
 
@@ -64,12 +74,30 @@ cordova.define("cordova/plugin/GAPlugin",
         //  Standard accounts support up to 20 custom dimensions.
         GAPlugin.prototype.setVariable = function(success, fail, index, value)
         {
+            success = success || this.onSuccess;
+            fail = fail || this.onFail;
             return exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
         };
         
         GAPlugin.prototype.exit = function(success, fail)
         {
+            success = success || this.onSuccess;
+            fail = fail || this.onFail;
             return exec(success, fail, 'GAPlugin', 'exitGA', []);
+        };
+
+        GAPlugin.onSuccess = function (data)
+        {
+            console.log('GAPlugin::onSuccess');
+            if (data)
+                console.log(data);
+        };
+
+        GAPlugin.onFail = function (data)
+        {
+            console.log('GAPlugin::onFail');
+            if (data)
+                console.log(data);
         };
 
         var gaPlugin = new GAPlugin();
