@@ -12,7 +12,7 @@
 @implementation GAPlugin
 - (void) initGA:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    NSString    *callbackId = [arguments pop];
+    NSString    *callbackId = (use_pg3)? @"" : [arguments pop];
     NSString    *accountID = [arguments objectAtIndex:0];
     NSInteger   dispatchPeriod = [[arguments objectAtIndex:1] intValue];
 
@@ -30,19 +30,30 @@
     [self successWithMessage:[NSString stringWithFormat:@"initGA: accountID = %@; Interval = %d seconds",accountID, dispatchPeriod] toID:callbackId];
 }
 
+- (void) initGA:(CDVInvokedUrlCommand*) command {
+	use_pg3 = YES;
+	pg3_command = command;
+	[self initGA:[NSMutableArray arrayWithArray:[command arguments]] withDict:NULL];
+}
+
 -(void) exitGA: (NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    NSString    *callbackId = [arguments pop];
+    NSString    *callbackId = (use_pg3)? @"" : [arguments pop];
 
     if (inited)
         [[[GAI sharedInstance] defaultTracker] close];
 	
     [self successWithMessage:@"exitGA" toID:callbackId];
 }
+- (void) exitGA:(CDVInvokedUrlCommand*) command {
+	use_pg3 = YES;
+	pg3_command = command;
+	[self exitGA:[NSMutableArray arrayWithArray:[command arguments]] withDict:NULL];
+}
 
 - (void) trackEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    NSString        *callbackId = [arguments pop];
+    NSString		*callbackId = (use_pg3)? @"" : [arguments pop];
     NSString        *category = [arguments objectAtIndex:0];
     NSString        *eventAction = [arguments objectAtIndex:1];
     NSString        *eventLabel = [arguments objectAtIndex:2];
@@ -60,10 +71,15 @@
     else
         [self failWithMessage:@"trackEvent failed - not initialized" toID:callbackId withError:nil];
 }
+- (void) trackEvent:(CDVInvokedUrlCommand*) command {
+	use_pg3 = YES;
+	pg3_command = command;
+	[self trackEvent:[NSMutableArray arrayWithArray:[command arguments]] withDict:NULL];
+}
 
 - (void) trackPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    NSString            *callbackId = [arguments pop];
+    NSString			*callbackId = (use_pg3)? @"" : [arguments pop];
     NSString            *pageURL = [arguments objectAtIndex:0];
 
     if (inited)
@@ -79,10 +95,15 @@
     else
         [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil];
 }
+- (void) trackPage:(CDVInvokedUrlCommand*) command {
+	use_pg3 = YES;
+	pg3_command = command;
+	[self trackPage:[NSMutableArray arrayWithArray:[command arguments]] withDict:NULL];
+}
 
 - (void) setVariable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    NSString            *callbackId = [arguments pop];
+	NSString    *callbackId = (use_pg3)? @"" : [arguments pop];
     NSInteger           index = [[arguments objectAtIndex:0] intValue];
     NSString            *value = [arguments objectAtIndex:1];
     
@@ -99,26 +120,38 @@
     else
         [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
+- (void) setVariable:(CDVInvokedUrlCommand*) command {
+	use_pg3 = YES;
+	pg3_command = command;
+	[self setVariable:[NSMutableArray arrayWithArray:[command arguments]] withDict:NULL];
+}
 
 -(void)successWithMessage:(NSString *)message toID:(NSString *)callbackID
 {
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
     
-    [self writeJavascript:[commandResult toSuccessCallbackString:callbackID]];
+	if (use_pg3) {
+		[self.commandDelegate sendPluginResult:commandResult callbackId:pg3_command.callbackId];
+	} else {
+		[self writeJavascript:[commandResult toSuccessCallbackString:callbackID]];
+	}
 }
 
 -(void)failWithMessage:(NSString *)message toID:(NSString *)callbackID withError:(NSError *)error
 {
     NSString        *errorMessage = (error) ? [NSString stringWithFormat:@"%@ - %@", message, [error localizedDescription]] : message;
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
-    
-    [self writeJavascript:[commandResult toErrorCallbackString:callbackID]];
+    if (use_pg3) {
+		[self.commandDelegate sendPluginResult:commandResult callbackId:pg3_command.callbackId];
+	} else {
+		[self writeJavascript:[commandResult toErrorCallbackString:callbackID]];
+	}
 }
 
 -(void)dealloc
 {
     [[[GAI sharedInstance] defaultTracker] close];
-    [super dealloc];
+    //[super dealloc];
 }
 
 @end
