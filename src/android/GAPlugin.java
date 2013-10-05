@@ -1,7 +1,7 @@
 package com.adobe.plugins;
 
-import org.apache.cordova.api.CallbackContext;
-import org.apache.cordova.api.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 
 import com.google.analytics.tracking.android.GAServiceManager;
