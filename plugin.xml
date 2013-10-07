@@ -2,7 +2,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
            id="com.adobe.plugins.GAPlugin"
-      version="2.1.2">
+		   version=">=2.1.2">
     <name>GAPlugin</name>
     <description>This plugin allows you to post usage information to your Google Analytics account.</description>
     <license>MIT</license>
@@ -24,6 +24,26 @@
         <source-file src="src/android/libGoogleAnalyticsV2.jar"  target-dir="libs" />
     </platform>
 
+	<platform name="wp8">
+		<config-file target="config.xml" parent="/*">
+            <feature name="GAPlugin">
+                <param name="wp-package" value="GAPlugin"/>
+            </feature>
+        </config-file>
+		
+		<source-file src="src/wp/GAPlugin.cs" />	
+	</platform>
+	
+	<platform name="wp7">
+		<config-file target="config.xml" parent="/*">
+            <feature name="GAPlugin">
+                <param name="wp-package" value="GAPlugin"/>
+            </feature>
+        </config-file>
+		
+		<source-file src="src/wp/GAPlugin.cs" />	
+	</platform>
+	
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
