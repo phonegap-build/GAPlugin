@@ -18,15 +18,22 @@ namespace Cordova.Extension.Commands
             try
             {
                 Console.WriteLine("initGA");
-                tracker = EasyTracker.GetTracker();
-                var arguments = JsonHelper.Deserialize<string[]>(options);
+                var arguments = CheckAndReturnArguments(2, options);
+
+                if (arguments.Length == 0)
+                {
+                    return;
+                }
+
                 var trackingID = arguments[0];
                 var dispatcherTimeInSeconds = int.Parse(arguments[1]);
 
-                tracker = AnalyticsEngine.Current.GetTracker(trackingID);
-                GAServiceManager.Current.DispatchPeriod = new TimeSpan(dispatcherTimeInSeconds);
-                AnalyticsEngine.Current.DefaultTracker = tracker;
 
+
+                EasyTracker.Current.Config.TrackingId = trackingID;
+                EasyTracker.Current.Config.DispatchPeriod = new TimeSpan(0, 0, dispatcherTimeInSeconds);
+
+                tracker = EasyTracker.GetTracker();
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -59,7 +66,12 @@ namespace Cordova.Extension.Commands
 
             try
             {
-                var arguments = JsonHelper.Deserialize<string[]>(options);
+                var arguments = CheckAndReturnArguments(4, options);
+
+                if (arguments.Length == 0)
+                {
+                    return;
+                }
 
                 var category = arguments[0];
                 var action = arguments[1];
@@ -83,8 +95,14 @@ namespace Cordova.Extension.Commands
 
             try
             {
-                var viewName = JsonHelper.Deserialize<string>(options);
-                tracker.SendView(viewName);
+                var arguments = CheckAndReturnArguments(1, options);
+
+                if (arguments.Length == 0)
+                {
+                    return;
+                }
+
+                tracker.SendView(arguments[0]);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -100,7 +118,13 @@ namespace Cordova.Extension.Commands
             Console.WriteLine("setVariable");
             try
             {
-                var arguments = JsonHelper.Deserialize<string[]>(options);
+                var arguments = CheckAndReturnArguments(2, options);
+
+                if (arguments.Length == 0)
+                {
+                    return;
+                }
+
                 var index = int.Parse(arguments[0]);
                 var value = arguments[1];
 
@@ -122,7 +146,13 @@ namespace Cordova.Extension.Commands
             Console.WriteLine("setDimension");
             try
             {
-                var arguments = JsonHelper.Deserialize<string[]>(options);
+                var arguments = CheckAndReturnArguments(2, options);
+
+                if (arguments.Length == 0)
+                {
+                    return;
+                }
+
                 var index = int.Parse(arguments[0]);
                 var value = arguments[1];
 
@@ -143,7 +173,13 @@ namespace Cordova.Extension.Commands
             Console.WriteLine("setMetric");
             try
             {
-                var arguments = JsonHelper.Deserialize<string[]>(options);
+                var arguments = CheckAndReturnArguments(2, options);
+
+                if (arguments.Length == 0)
+                {
+                    return;
+                }
+
                 var index = int.Parse(arguments[0]);
                 var value = int.Parse(arguments[1]);
 
@@ -157,6 +193,19 @@ namespace Cordova.Extension.Commands
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ex.Message));
                 return;
             }
+        }
+
+        private string[] CheckAndReturnArguments(int numberOfArguments, string arguments)
+        {
+            var argumentArray = JsonHelper.Deserialize<string[]>(arguments);
+
+            if (argumentArray.Length != numberOfArguments + 1)
+            {
+                DispatchCommandResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
+                return new string[] { };
+            }
+
+            return argumentArray;
         }
     }
 }
