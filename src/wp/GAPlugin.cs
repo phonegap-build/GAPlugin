@@ -5,12 +5,17 @@ using WPCordovaClassLib.Cordova.Commands;
 using WPCordovaClassLib.Cordova.JSON;
 
 using GoogleAnalytics;
+using System.Xml.Linq;
+using System.Windows;
+using System.Windows.Threading;
 
 
 namespace Cordova.Extension.Commands
 {
     public class GAPlugin : BaseCommand
     {
+        Tracker tracker;
+
         public void initGA(string options)
         {
             try
@@ -25,9 +30,10 @@ namespace Cordova.Extension.Commands
 
                 var trackingID = arguments[0];
                 var dispatcherTimeInSeconds = int.Parse(arguments[1]);
-                
-                EasyTracker.Current.Config.TrackingId = trackingID;
-                EasyTracker.Current.Config.DispatchPeriod = new TimeSpan(0, 0, dispatcherTimeInSeconds);
+
+                InitializeTrackerConfig(trackingID, dispatcherTimeInSeconds);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() => tracker = EasyTracker.GetTracker());
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -73,7 +79,7 @@ namespace Cordova.Extension.Commands
                 var label = arguments[2];
                 var value = int.Parse(arguments[3]);
 
-                EasyTracker.GetTracker().SendEvent(category, action, label, value);
+                tracker.SendEvent(category, action, label, value);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -97,7 +103,7 @@ namespace Cordova.Extension.Commands
                     return;
                 }
 
-                EasyTracker.GetTracker().SendView(arguments[0]);
+                tracker.SendView(arguments[0]);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -123,7 +129,7 @@ namespace Cordova.Extension.Commands
                 var index = int.Parse(arguments[0]);
                 var value = arguments[1];
 
-                EasyTracker.GetTracker().SetCustomDimension(index, value);
+                tracker.SetCustomDimension(index, value);
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -151,7 +157,7 @@ namespace Cordova.Extension.Commands
                 var index = int.Parse(arguments[0]);
                 var value = arguments[1];
 
-                EasyTracker.GetTracker().SetCustomDimension(index, value);
+                tracker.SetCustomDimension(index, value);
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -178,7 +184,7 @@ namespace Cordova.Extension.Commands
                 var index = int.Parse(arguments[0]);
                 var value = int.Parse(arguments[1]);
 
-                EasyTracker.GetTracker().SetCustomMetric(index, value);
+                tracker.SetCustomMetric(index, value);
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -188,6 +194,27 @@ namespace Cordova.Extension.Commands
                 DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, ex.Message));
                 return;
             }
+        }
+
+        private void InitializeTrackerConfig(string trackingID, int dispatcherTimeInSeconds)
+        {
+
+            var currentConfig = EasyTracker.Current.Config;
+            if (currentConfig == null)
+            {
+                currentConfig = new EasyTrackerConfig();
+            }
+
+            var version = XDocument.Load("WMAppManifest.xml").Root.Element("App").Attribute("Version").Value;
+            var appName = XDocument.Load("WMAppManifest.xml").Root.Element("App").Attribute("Title").Value;
+
+            currentConfig.TrackingId = trackingID;
+            currentConfig.AppName = appName;
+            currentConfig.AppVersion = version;
+            currentConfig.DispatchPeriod = new TimeSpan(0, 0, dispatcherTimeInSeconds);
+            GAServiceManager.Current.DispatchPeriod = TimeSpan.FromSeconds(dispatcherTimeInSeconds);
+
+            EasyTracker.Current.Config = currentConfig;
         }
 
         private string[] CheckAndReturnArguments(int numberOfArguments, string arguments)
