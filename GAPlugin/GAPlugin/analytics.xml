@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--More info at https://developers.google.com/analytics/devguides/collection/android/v2/parameters-->
+<analytics xmlns="http://googleanalyticssdk.codeplex.com/ns/easytracker">
+  <!--Replace placeholder ID with your tracking ID-->
+  <trackingId>UA-XXXX-Y</trackingId>
+  <!--Replace placeholder name with your app name. If you leave this empty your WMAppManifest.xml Title will be used-->
+  <!--<appName>Test</appName>-->
+  <!--Replace placeholder version with your app version. If you leave this empty your WMAppManifest.xml version will be used-->
+  <!--<appVersion>1.0.0.0</appVersion>-->
+  <!--Enable writing of debug information to debug window log, useful for troubleshooting your implementation. Default is false.-->
+  <!--<debug>false</debug>-->
+  <!--The dispatch period in seconds. Default is 0 (indicating to send logs immediately)-->
+  <!--<dispatchPeriod>30</dispatchPeriod>-->
+  <!--The dispatch period in seconds. Values must be between 0.0 and 100.0 Default is 100.0-->
+  <!--<sampleFrequency>100.0</sampleFrequency>-->
+  <!--Tells Google Analytics to anonymize the information sent by the tracker objects by removing the last octet of the IP address prior to its storage. Note that this will slightly reduce the accuracy of geographic reporting. Default is false.-->
+  <!--<anonymizeIp>false</anonymizeIp>-->
+  <!--Enable automatic exception tracking. Default is false.-->
+  <!--<reportUncaughtExceptions>false</reportUncaughtExceptions>-->
+  <!--The amount of time (in seconds) your application can stay in the background before the session is ended. Negative value disables EasyTracker session management. Default is 30-->
+  <!--<sessionTimeout>30</sessionTimeout>-->
+  <!--Enable automatic app lifetime tracking (e.g. suspend/resume). Default is false.-->
+  <!--<autoAppLifetimeTracking>false</autoAppLifetimeTracking>-->
+  <!--Enable automatic app lifetime monitoring (e.g. suspend/resume). If true, all dispatched events will be sent on suspend and session timeout will be honored. true by default; must be true if autoAppLifetimeTracking is true.-->
+  <!--<autoAppLifetimeMonitoring>true</autoAppLifetimeMonitoring>-->
+  <!--Enables automatic network connectivity monitoring and avoids sending logs while not connected. Default is true.-->
+  <!--<autoTrackNetworkConnectivity>true</autoTrackNetworkConnectivity>-->
+  <!--Enable HTTPS instead of HTTP if true, causes all hits to be sent to the secure (SSL) Google Analytics endpoint. Default is false.-->
+  <!--<useSecure>false</useSecure>-->
+</analytics>

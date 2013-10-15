@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://googleanalyticssdk.codeplex.com/ns/easytracker" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="analytics">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="trackingId" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="appName" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="appVersion" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="debug" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+        <xs:element name="dispatchPeriod" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="sampleFrequency" type="xs:float" minOccurs="0" maxOccurs="1" />
+        <xs:element name="anonymizeIp" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+        <xs:element name="reportUncaughtExceptions" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+        <xs:element name="sessionTimeout" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="autoAppLifetimeTracking" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+        <xs:element name="autoAppLifetimeMonitoring" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+        <xs:element name="autoTrackNetworkConnectivity" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+        <xs:element name="useSecure" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

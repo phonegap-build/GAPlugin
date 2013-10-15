@@ -11,8 +11,6 @@ namespace Cordova.Extension.Commands
 {
     public class GAPlugin : BaseCommand
     {
-        Tracker tracker = EasyTracker.GetTracker();
-
         public void initGA(string options)
         {
             try
@@ -27,13 +25,10 @@ namespace Cordova.Extension.Commands
 
                 var trackingID = arguments[0];
                 var dispatcherTimeInSeconds = int.Parse(arguments[1]);
-
-
-
+                
                 EasyTracker.Current.Config.TrackingId = trackingID;
                 EasyTracker.Current.Config.DispatchPeriod = new TimeSpan(0, 0, dispatcherTimeInSeconds);
 
-                tracker = EasyTracker.GetTracker();
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -78,7 +73,7 @@ namespace Cordova.Extension.Commands
                 var label = arguments[2];
                 var value = int.Parse(arguments[3]);
 
-                tracker.SendEvent(category, action, label, value);
+                EasyTracker.GetTracker().SendEvent(category, action, label, value);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -102,7 +97,7 @@ namespace Cordova.Extension.Commands
                     return;
                 }
 
-                tracker.SendView(arguments[0]);
+                EasyTracker.GetTracker().SendView(arguments[0]);
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
             }
@@ -128,7 +123,7 @@ namespace Cordova.Extension.Commands
                 var index = int.Parse(arguments[0]);
                 var value = arguments[1];
 
-                tracker.SetCustomDimension(index, value);
+                EasyTracker.GetTracker().SetCustomDimension(index, value);
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -156,7 +151,7 @@ namespace Cordova.Extension.Commands
                 var index = int.Parse(arguments[0]);
                 var value = arguments[1];
 
-                tracker.SetCustomDimension(index, value);
+                EasyTracker.GetTracker().SetCustomDimension(index, value);
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -183,7 +178,7 @@ namespace Cordova.Extension.Commands
                 var index = int.Parse(arguments[0]);
                 var value = int.Parse(arguments[1]);
 
-                tracker.SetCustomMetric(index, value);
+                EasyTracker.GetTracker().SetCustomMetric(index, value);
 
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
