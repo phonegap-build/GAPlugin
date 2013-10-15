@@ -22,6 +22,7 @@ For additional info, take a look at the [Plugman Documentation](https://github.c
 The Windows Phone Plugins use the NuGet Package 'GoogleAnalyticsSDK' from Tim Greenfield.
 To compile your project you either have to install this package through the Solution NuGet Package Manager or manually reference his dll's.
 They are provided in folder: src\wp8\packages. 
+For more information on this package see: https://googleanalyticssdk.codeplex.com/
 
 ## Usage
 The plugin creates the object `window.plugins.gaPlugin
