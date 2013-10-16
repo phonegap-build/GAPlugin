@@ -205,12 +205,7 @@ namespace Cordova.Extension.Commands
                 currentConfig = new EasyTrackerConfig();
             }
 
-            var version = XDocument.Load("WMAppManifest.xml").Root.Element("App").Attribute("Version").Value;
-            var appName = XDocument.Load("WMAppManifest.xml").Root.Element("App").Attribute("Title").Value;
-
             currentConfig.TrackingId = trackingID;
-            currentConfig.AppName = appName;
-            currentConfig.AppVersion = version;
             currentConfig.DispatchPeriod = new TimeSpan(0, 0, dispatcherTimeInSeconds);
             GAServiceManager.Current.DispatchPeriod = TimeSpan.FromSeconds(dispatcherTimeInSeconds);
 
