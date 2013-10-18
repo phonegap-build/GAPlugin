@@ -43,19 +43,7 @@
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };
-
-    GAPlugin.prototype.trackSocial =function(success, fail, network, action, target){
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackSocial', [network, action, target]);
-    };
-
-    GAPlugin.prototype.trackEcommerceTransaction =function(success, fail, affiliation, revenue, tax, shipping, currencyCode){
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackEcommerceTransaction', [affiliation, revenue, tax, shipping, currencyCode]);
-    };
-
-    GAPlugin.prototype.trackEcommerceItem =function(success, fail, transactionID, productName, productSKU, productCategory, productPrice, productQuantity,currencyCode){
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackEcommerceItem', [transactionID, productName, productSKU, productCategory, productPrice, productQuantity,currencyCode]);
-    };
-
+ 
     if (cordovaRef)
     {
         cordovaRef.addConstructor(function() {
