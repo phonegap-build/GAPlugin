@@ -20,7 +20,6 @@ namespace Cordova.Extension.Commands
         {
             try
             {
-                Console.WriteLine("initGA");
                 var arguments = CheckAndReturnArguments(2, options);
 
                 if (arguments.Length == 0)
@@ -49,7 +48,6 @@ namespace Cordova.Extension.Commands
         {
             try
             {
-                Console.WriteLine("exitGA");
                 GAServiceManager.Current.Dispatch();
                 DispatchCommandResult(new PluginResult(PluginResult.Status.OK));
                 return;
@@ -63,8 +61,6 @@ namespace Cordova.Extension.Commands
 
         public void trackEvent(string options)
         {
-            Console.WriteLine("trackEvent");
-
             try
             {
                 var arguments = CheckAndReturnArguments(4, options);
@@ -92,8 +88,6 @@ namespace Cordova.Extension.Commands
 
         public void trackPage(string options)
         {
-            Console.WriteLine("trackPage");
-
             try
             {
                 var arguments = CheckAndReturnArguments(1, options);
@@ -116,7 +110,6 @@ namespace Cordova.Extension.Commands
 
         public void setVariable(string options)
         {
-            Console.WriteLine("setVariable");
             try
             {
                 var arguments = CheckAndReturnArguments(2, options);
@@ -144,7 +137,6 @@ namespace Cordova.Extension.Commands
 
         public void setDimension(string options)
         {
-            Console.WriteLine("setDimension");
             try
             {
                 var arguments = CheckAndReturnArguments(2, options);
@@ -171,7 +163,6 @@ namespace Cordova.Extension.Commands
 
         public void setMetric(string options)
         {
-            Console.WriteLine("setMetric");
             try
             {
                 var arguments = CheckAndReturnArguments(2, options);
@@ -198,7 +189,6 @@ namespace Cordova.Extension.Commands
 
         private void InitializeTrackerConfig(string trackingID, int dispatcherTimeInSeconds)
         {
-
             var currentConfig = EasyTracker.Current.Config;
             if (currentConfig == null)
             {
