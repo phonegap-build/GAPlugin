@@ -14,7 +14,7 @@
   <license>MIT</license>
 
   <js-module src="www/GAPlugin.js" name="GAPlugin">
-      <clobbers target="GAPlugin" />
+      <clobbers target="plugins.gaPlugin" />
   </js-module>
 
   <engines>
