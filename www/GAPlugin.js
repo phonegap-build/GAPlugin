@@ -1,4 +1,4 @@
-(function(){
+
     var cordovaRef = window.PhoneGap || window.Cordova || window.cordova;
 
     function GAPlugin() { }
@@ -39,20 +39,9 @@
     GAPlugin.prototype.setVariable = function(success, fail, index, value) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
     };
-    
+
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };
- 
-    if (cordovaRef)
-    {
-        cordovaRef.addConstructor(function() {
-            if(!window.plugins) {
-                window.plugins = {};
-            }
-            if(!window.plugins.gaPlugin) {
-                window.plugins.gaPlugin = new GAPlugin();
-            }
-        });
-    }
-})(); /* End of Temporary Scope. */
+
+    module.exports = new GAPlugin();
