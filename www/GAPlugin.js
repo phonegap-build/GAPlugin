@@ -33,9 +33,10 @@
    // log a transaction
    //
    // object = some JSON
-   GAPlugin.prototype.trackTransaction = function(success, fail, something){
+   GAPlugin.prototype.trackTransaction = function(success, fail, transObj){
        console.log("-mt GAPlugin trackTransaction()");
-       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [something]);
+       console.log(transObj);
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', transObj);
    }
 
 
