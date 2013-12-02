@@ -9,7 +9,7 @@
     <keywords>cordova,google,analytics</keywords>
     
     <js-module src="www/GAPlugin.js" name="GAPlugin">
-        <clobbers target="plugins.analytics" />
+        <clobbers target="window.plugins.gaPlugin" />
     </js-module>
 
     <!-- android -->
