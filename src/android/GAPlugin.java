@@ -4,6 +4,8 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 
+import android.util.Log;
+
 import com.google.analytics.tracking.android.GAServiceManager;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
@@ -91,6 +93,7 @@ public class GAPlugin extends CordovaPlugin {
 	}
 	
 	private void __trackTransaction(){
+		Log.d("GAPlugin", "__trackTransaction()");
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
 		Tracker tracker = ga.getDefaultTracker(); 
 		//tracker.sendView(args.getString(0));
@@ -111,7 +114,8 @@ public class GAPlugin extends CordovaPlugin {
 				.setProductCategory("Game expansions")                // (String) Product category
 				.build());
 
-			tracker.sendTransaction(myTrans); // Send the transaction
+		tracker.sendTransaction(myTrans); // Send the transaction
+		Log.d("GAPlugin", "__trackTransaction() done");
 	}
 }
 
