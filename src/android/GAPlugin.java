@@ -93,6 +93,23 @@ public class GAPlugin extends CordovaPlugin {
 		Tracker tracker = ga.getDefaultTracker(); 
 		//tracker.sendView(args.getString(0));
 		
+		Transaction myTrans = new Transaction.Builder(
+			"0_123456",                                           // (String) Transaction Id, should be unique.
+			(long) (2.16 * 1000000))                              // (long) Order total (in micros)
+			.setAffiliation("In-App Store")                       // (String) Affiliation
+			.setTotalTaxInMicros((long) (0.17 * 1000000))         // (long) Total tax (in micros)
+			.setShippingCostInMicros(0)                           // (long) Total shipping cost (in micros)
+			.build();
+
+			myTrans.addItem(new Item.Builder(
+					"L_789",                                              // (String) Product SKU
+					"Level Pack: Space",                                  // (String) Product name
+					(long) (1.99 * 1000000),                              // (long) Product price (in micros)
+					(long) 1)                                             // (long) Product quantity
+				.setProductCategory("Game expansions")                // (String) Product category
+				.build());
+
+			tracker.sendTransaction(myTrans); // Send the transaction
 	}
 }
 
