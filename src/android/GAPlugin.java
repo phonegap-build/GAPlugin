@@ -9,6 +9,7 @@ import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 
 public class GAPlugin extends CordovaPlugin {
+	
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
@@ -75,7 +76,23 @@ public class GAPlugin extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
+		else if(action.equals("trackTransaction")){
+			try {
+				this.__trackTransaction();
+				callback.success("trackTransaction - = " + args.getString(0));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
 		return false;
+	}
+	
+	private void __trackTransaction(){
+		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
+		Tracker tracker = ga.getDefaultTracker(); 
+		//tracker.sendView(args.getString(0));
+		
 	}
 }
 

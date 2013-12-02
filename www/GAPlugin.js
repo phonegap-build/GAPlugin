@@ -29,6 +29,16 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'trackPage', [pageURL]);
     };
 
+
+   // log a transaction
+   //
+   // object = some JSON
+   GAPlugin.prototype.trackTransaction = function(success, fail, something){
+       console.log("-mt GAPlugin trackTransaction()");
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [something]);
+   }
+
+
     // Set a custom variable. The variable set is included with
     // the next event only. If there is an existing custom variable at the specified
     // index, it will be overwritten by this one.
