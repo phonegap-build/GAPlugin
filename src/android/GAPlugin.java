@@ -85,7 +85,7 @@ public class GAPlugin extends CordovaPlugin {
 		else if(action.equals("trackTransaction")){
 			try {
 				this.__trackTransaction(args.getJSONObject(0));
-				callback.success("trackTransaction - = " + args.getString(0));
+				callback.success("trackTransaction = " + args.getString(0));
 				return true;
 			} catch (final Exception e) {
 				callback.error(e.getMessage());
@@ -95,30 +95,30 @@ public class GAPlugin extends CordovaPlugin {
 	}
 	
 	private void __trackTransaction(JSONObject jObj){
-		Log.d("GAPlugin", "__trackTransaction()");
-		Log.d("GAPlugin", jObj.toString());
-		
 		Builder transBuilder = new Transaction.Builder(
-			jObj.getString("transactionId"),                                           // (String) Transaction Id, should be unique.
-			jObj.getLong("orderTotal")                              // (long) Order total (in micros)
+			jObj.getString("transactionId"),	// (String) Transaction Id, should be unique.
+			jObj.getLong("orderTotal")	// (long) Order total (in micros)
 		);
-		transBuilder.setAffiliation(jObj.getString("affiliation"));                       // (String) Affiliation
-		transBuilder.setTotalTaxInMicros(jObj.getLong("totalTax"));         // (long) Total tax (in micros)
-		transBuilder.setShippingCostInMicros(jObj.getLong("shippingCost"));                           // (long) Total shipping cost (in micros)
+		transBuilder.setAffiliation(jObj.getString("affiliation"));	// (String) Affiliation
+		transBuilder.setTotalTaxInMicros(jObj.getLong("totalTax"));	// (long) Total tax (in micros)
+		transBuilder.setShippingCostInMicros(jObj.getLong("shippingCost"));	// (long) Total shipping cost (in micros)
 		Transaction trans = transBuilder.build();
-
-		trans.addItem(new Item.Builder(
-				"L_789",                                              // (String) Product SKU
-				"Level Pack: Space",                                  // (String) Product name
-				(long) (1.99 * 1000000),                              // (long) Product price (in micros)
-				(long) 1)                                             // (long) Product quantity
-			.setProductCategory("Game expansions")                // (String) Product category
-			.build());
+		JSONArray items = jObj.getJSONArray("items");
+		for(int i = 0 ; i < items.length(); i++){	//add all the items to the transaction
+			JSONObject item = items.getJSONObject(i);
+			Item.Builder itemBuilder = new Item.Builder(
+				item.getString("sku"),	// (String) Product SKU
+				item.getString("name"),	// (String) Product name
+				item.getLong("price"),	// (long) Product price (in micros)
+				item.getLong("quantity")	// (long) Product quantity
+			);
+			itemBuilder.setProductCategory(item.getString("category"));	// (String) Product category
+			trans.addItem(itemBuilder.build());
+		}
 
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
 		Tracker tracker = ga.getDefaultTracker(); 
 		tracker.sendTransaction(trans); // Send the transaction
-		Log.d("GAPlugin", "__trackTransaction() done");
 	}
 }
 
