@@ -74,21 +74,37 @@
 
 - (void) trackTransaction:(CDVInvokedUrlCommand *)command
 {
-/*    NSString            *callbackId = command.callbackId;
-    NSString            *pageURL = [command.arguments objectAtIndex:0];
+    NSString            *callbackId = command.callbackId;
+    NSDictionary *jsonObj = [command.arguments objectAtIndex:0];
     
     if (inited)
     {
-        NSError *error = nil;
-        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendView:pageURL];
+       NSError *error = nil;
+        
+        GAITransaction *transaction = [GAITransaction transactionWithId:[jsonObj objectForKey:@"transactionId"]            // (NSString) Transaction ID, should be unique.
+            withAffiliation:[jsonObj objectForKey:@"affiliation"]];      // (NSString) Affiliation
+        
+        transaction.taxMicros = [[jsonObj objectForKey:@"totalTax"] longLongValue];           // (int64_t) Total tax (in micros)
+        transaction.shippingMicros = [[jsonObj objectForKey:@"shippingCost"] longLongValue];                   // (int64_t) Total shipping (in micros)
+        transaction.revenueMicros = [[jsonObj objectForKey:@"orderTotal"] longLongValue];       // (int64_t) Total revenue (in micros)
+        
+        NSArray *items = [jsonObj objectForKey:@"items"];
+        for (NSDictionary *item in items) {
+            [transaction addItemWithCode:[item objectForKey:@"sku"]                         // (NSString) Product SKU
+                               name:[item objectForKey:@"name"]             // (NSString) Product name
+                           category:[item objectForKey:@"category"]               // (NSString) Product category
+                        priceMicros:[[item objectForKey:@"price"] longLongValue]        // (int64_t)  Product price (in micros)
+                           quantity:[[item objectForKey:@"quantity"] longLongValue]];                              // (NSInteger)  Product quantity
+        }
+        BOOL result = [[[GAI sharedInstance] defaultTracker] sendTransaction:transaction];
         
         if (result)
-            [self successWithMessage:[NSString stringWithFormat:@"trackPage: url = %@", pageURL] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"trackTransaction: url = %@", jsonObj] toID:callbackId];
         else
-            [self failWithMessage:@"trackPage failed" toID:callbackId withError:error];
+            [self failWithMessage:@"trackTransaction failed" toID:callbackId withError:error];
     }
     else
-        [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil]; */
+        [self failWithMessage:@"trackTransaction failed - not initialized" toID:callbackId withError:nil];
 }
 
 
