@@ -18,9 +18,11 @@ public class GAPlugin extends CordovaPlugin {
 	
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
+		Log.d("GAPlugin", "execute()");
+		Log.d("GAPlugin", action);
+
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
 		Tracker tracker = ga.getDefaultTracker(); 
-
 		if (action.equals("initGA")) {
 			try {
 				tracker = ga.getTracker(args.getString(0));
@@ -91,6 +93,16 @@ public class GAPlugin extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
+		else if(action.equals("trackCaughtException")){
+			Log.d("GAPlugin", "got action");
+			try {
+				this.__trackException(args.getString(0), false);
+				callback.success("trackCaughtException = " + args.getString(0));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
 		return false;
 	}
 	
@@ -119,6 +131,12 @@ public class GAPlugin extends CordovaPlugin {
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
 		Tracker tracker = ga.getDefaultTracker(); 
 		tracker.sendTransaction(trans); // Send the transaction
+	}
+	
+	private void __trackException(String message, Boolean fatal){
+		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
+		Tracker tracker = ga.getDefaultTracker(); 
+		tracker.sendException(message, fatal); // Send the exception
 	}
 }
 

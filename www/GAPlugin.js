@@ -35,7 +35,16 @@
    // transObj = transaction JSON
    GAPlugin.prototype.trackTransaction = function(success, fail, transObj){
        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [transObj]);
-   }
+   };
+
+
+   // log a caught exception
+   //
+   // message = exception message
+   GAPlugin.prototype.trackCaughtException = function(success, fail, message){
+       console.log("-mt GAPlugin.trackCaughtException()");
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackCaughtException', [message]);
+   };
 
 
     // Set a custom variable. The variable set is included with
