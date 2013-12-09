@@ -134,6 +134,17 @@ Example:
 
 	gaPlugin.trackTransaction(nativePluginResultHandler, nativePluginErrorHandler, transObj);
 
+Exceptions can be logged with 3 arguments:
+
+	1)	resultHandler - a function that will be called on success
+	2)	errorHandler - a function that will be called on error.
+	3)	message - A string detailing the exception
+
+Examples:
+
+	gaPlugin.trackCaughtException(nativePluginResultHandler, nativePluginErrorHandler, message);
+	gaPlugin.trackUncaughtException(nativePluginResultHandler, nativePluginErrorHandler, message);
+
 Finally, when your app shuts down, you'll want to cleanup after yourself by calling exit();
 exit() accepts 2 arguments;
 

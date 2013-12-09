@@ -3,6 +3,7 @@ package com.adobe.plugins;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -18,9 +19,6 @@ public class GAPlugin extends CordovaPlugin {
 	
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callback) {
-		Log.d("GAPlugin", "execute()");
-		Log.d("GAPlugin", action);
-
 		GoogleAnalytics ga = GoogleAnalytics.getInstance(cordova.getActivity());
 		Tracker tracker = ga.getDefaultTracker(); 
 		if (action.equals("initGA")) {
@@ -94,7 +92,6 @@ public class GAPlugin extends CordovaPlugin {
 			}
 		}
 		else if(action.equals("trackCaughtException")){
-			Log.d("GAPlugin", "got action");
 			try {
 				this.__trackException(args.getString(0), false);
 				callback.success("trackCaughtException = " + args.getString(0));
@@ -103,10 +100,19 @@ public class GAPlugin extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
+		else if(action.equals("trackUncaughtException")){
+			try {
+				this.__trackException(args.getString(0), true);
+				callback.success("trackUncaughtException = " + args.getString(0));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
 		return false;
 	}
 	
-	private void __trackTransaction(JSONObject jObj){
+	private void __trackTransaction(JSONObject jObj) throws JSONException{
 		Builder transBuilder = new Transaction.Builder(
 			jObj.getString("transactionId"),	// (String) Transaction Id, should be unique.
 			jObj.getLong("orderTotal")	// (long) Order total (in micros)

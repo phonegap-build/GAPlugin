@@ -42,8 +42,15 @@
    //
    // message = exception message
    GAPlugin.prototype.trackCaughtException = function(success, fail, message){
-       console.log("-mt GAPlugin.trackCaughtException()");
        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackCaughtException', [message]);
+   };
+
+
+   // log an uncaught exception
+   //
+   // message = exception message
+   GAPlugin.prototype.trackUncaughtException = function(success, fail, message){
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackUncaughtException', [message]);
    };
 
 
