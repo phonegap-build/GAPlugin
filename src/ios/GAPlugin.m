@@ -72,6 +72,67 @@
         [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil];
 }
 
+- (void) trackTransaction:(CDVInvokedUrlCommand *)command
+{
+/*    NSString            *callbackId = command.callbackId;
+    NSString            *pageURL = [command.arguments objectAtIndex:0];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendView:pageURL];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackPage: url = %@", pageURL] toID:callbackId];
+        else
+            [self failWithMessage:@"trackPage failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil]; */
+}
+
+
+- (void) trackCaughtException:(CDVInvokedUrlCommand *)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSString            *message = [command.arguments objectAtIndex:0];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendException:NO // Boolean indicates non-fatal exception.
+                                                                    withDescription:message];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackCaughtException: message = %@", message] toID:callbackId];
+        else
+            [self failWithMessage:@"trackCaughtException failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackCaughtException failed - not initialized" toID:callbackId withError:nil];
+}
+
+- (void) trackUncaughtException:(CDVInvokedUrlCommand *)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSString            *message = [command.arguments objectAtIndex:0];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendException:YES // Boolean indicates fatal exception.
+                                                                    withDescription:message];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackUncaughtException: message = %@", message] toID:callbackId];
+        else
+            [self failWithMessage:@"trackUncaughtException failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackUncaughtException failed - not initialized" toID:callbackId withError:nil];
+}
+
+
 - (void) setVariable:(CDVInvokedUrlCommand*)command
 {
     NSString            *callbackId = command.callbackId;
