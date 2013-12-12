@@ -88,7 +88,7 @@ public class GAPlugin extends CordovaPlugin {
 			try {
 				Transaction trans = new Transaction.Builder(
 						args.getString(0), 
-						args.getLong(1)
+						(long)(args.getDouble(1) * 1000000)
 				)
 				.setShippingCostInMicros(0)
 				.setCurrencyCode(args.getString(2))
@@ -100,8 +100,8 @@ public class GAPlugin extends CordovaPlugin {
 					JSONObject item = items.getJSONObject(i);
 					trans.addItem(new Item.Builder(
 							item.getString("sku"), 
-							item.getString("name"), 
-							item.getLong("price"), 
+							item.getString("name"),
+							(long)(item.getDouble("price") * 1000000), 
 							item.getLong("quantity"))
 					.setProductCategory(item.getString("category"))
 					.build());
