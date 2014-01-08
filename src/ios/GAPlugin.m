@@ -72,6 +72,26 @@
         [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil];
 }
 
+- (void) trackException:(CDVInvokedUrlCommand *)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSString            *exDescription = [command.arguments objectAtIndex:0];
+    BOOL isFatal = [[command.arguments objectAtIndex:1] boolValue];
+
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendException:isFatal withDescription:exDescription];
+
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackException: description = %@", exDescription] toID:callbackId];
+        else
+            [self failWithMessage:@"trackException failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackException failed - not initialized" toID:callbackId withError:nil];
+}
+
 - (void) setVariable:(CDVInvokedUrlCommand*)command
 {
     NSString            *callbackId = command.callbackId;

@@ -29,6 +29,14 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'trackPage', [pageURL]);
     };
 
+    // log an exception
+    //
+    // exception = exception description
+    // isFatal = whether exception is fatal
+    GAPlugin.prototype.trackException = function(success, fail, exception, isFatal) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackException', [exception, isFatal]);
+    };
+
     // Set a custom variable. The variable set is included with
     // the next event only. If there is an existing custom variable at the specified
     // index, it will be overwritten by this one.
