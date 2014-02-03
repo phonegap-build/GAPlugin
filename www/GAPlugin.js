@@ -1,4 +1,3 @@
-
     var cordovaRef = window.PhoneGap || window.Cordova || window.cordova;
 
     function GAPlugin() { }
@@ -17,10 +16,9 @@
     // eventAction = The event action. This parameter is required to be non-empty.
     // eventLabel = The event label. This parameter may be a blank string to indicate no label.
     // eventValue = The event value. This parameter may be -1 to indicate no value.
-    GAPlugin.prototype.trackEvent = function(success, fail, category, eventAction, eventLabel, eventValue) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackEvent', [category, eventAction, eventLabel, eventValue]);
+    GAPlugin.prototype.trackEvent = function(success, fail, category, eventAction, eventLabel, eventValue, dimensionData) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackEvent', [category, eventAction, eventLabel, eventValue, dimensionData]);
     };
-
 
     // log a page view
     //
@@ -37,15 +35,59 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'trackException', [exception, isFatal]);
     };
 
-    // Set a custom variable. The variable set is included with
+    // log an transaction
+    //
+    // transactionId = The transaction ID with which the item should be associated
+    // affiliation = An entity with which the transaction should be affiliated (e.g. a particular store)
+    // name = The name of the product
+    // sku = The SKU of a product
+    // price = The price of a product
+    // quantity = The quantity of a product
+    // revenue = The total revenue of a transaction, including tax and shipping
+    // currencyCode = The local currency of a transaction.
+    GAPlugin.prototype.trackTransaction = function(success, fail, transactionId, affiliation, name, sku, price, quantity, revenue, currencyCode) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction',
+            [
+                transactionId,
+                affiliation,
+                name,
+                sku,
+                price,
+                quantity,
+                revenue,
+                currencyCode
+            ]
+        );
+    };
+
+    GAPlugin.prototype.setOptOut = function(status) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setOptOut',
+            [
+                status
+            ]
+        );
+    };
+
+    // Set a custom dimension. The variable set is included with
     // the next event only. If there is an existing custom variable at the specified
     // index, it will be overwritten by this one.
     //
     // value = the value of the variable you are logging
     // index = the numerical index of the dimension to which this variable will be assigned (1 - 20)
     //  Standard accounts support up to 20 custom dimensions.
-    GAPlugin.prototype.setVariable = function(success, fail, index, value) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
+    GAPlugin.prototype.setCustomDimension = function(success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setCustomDimension', [index, value]);
+    };
+
+    // Set a custom dimension. The variable set is included with
+    // the next event only. If there is an existing custom variable at the specified
+    // index, it will be overwritten by this one.
+    //
+    // value = the value of the variable you are logging
+    // index = the numerical index of the dimension to which this variable will be assigned (1 - 20)
+    // Standard accounts support up to 20 custom dimensions.
+    GAPlugin.prototype.setCustomMetric = function(success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setCustomMetric', [index, value]);
     };
 
     GAPlugin.prototype.exit = function(success, fail) {

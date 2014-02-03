@@ -41,5 +41,6 @@
 
         <framework src="CoreData.framework" />
         <framework src="SystemConfiguration.framework" />
+        <framework src="AdSupport.framework" />
     </platform>
 </plugin>
