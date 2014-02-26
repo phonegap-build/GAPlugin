@@ -21,6 +21,7 @@
 - (void) trackTransaction:(CDVInvokedUrlCommand*)command;
 - (void) trackCaughtException:(CDVInvokedUrlCommand*)command;
 - (void) trackUncaughtException:(CDVInvokedUrlCommand*)command;
-- (void) setVariable:(CDVInvokedUrlCommand*)command;
+- (void) setMetric:(CDVInvokedUrlCommand*)command;
+- (void) setDimension:(CDVInvokedUrlCommand*)command;
 
 @end

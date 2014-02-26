@@ -53,10 +53,10 @@ public class GAPlugin extends CordovaPlugin {
 			} catch (final Exception e) {
 				callback.error(e.getMessage());
 			}
-		} else if (action.equals("setVariable")) {
+		} else if (action.equals("setMetric")) {
 			try {
-				tracker.setCustomDimension(args.getInt(0), args.getString(1));
-				callback.success("setVariable passed - index = " + args.getInt(0) + "; value = " + args.getString(1));
+				tracker.setCustomMetric(args.getInt(0), args.getLong(1));
+				callback.success("setMetric passed - index = " + args.getInt(0) + "; value = " + args.getLong(1));
 				return true;
 			} catch (final Exception e) {
 				callback.error(e.getMessage());

@@ -61,8 +61,8 @@
     // value = the value of the variable you are logging
     // index = the numerical index of the dimension to which this variable will be assigned (1 - 20)
     //  Standard accounts support up to 20 custom dimensions.
-    GAPlugin.prototype.setVariable = function(success, fail, index, value) {
-        return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
+    GAPlugin.prototype.setMetric = function(success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setMetric', [index, value]);
     };
 
     GAPlugin.prototype.setDimension = function(success, fail, index, value) {
