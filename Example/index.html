@@ -41,19 +41,15 @@
 				gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "Button", "Click", "event only", 1);
 			}
         
-			function MetricButtonClicked() {
-				gaPlugin.setMetric(nativePluginResultHandler, nativePluginErrorHandler, 1, 123);
-				gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "event with metric", "set variable", "favoriteColor", 1);
-			}
-			function DimensionButtonClicked() {
+			function VariableButtonClicked() {
 				// Set a dimension based on index and value. Make sure you have added a dimension in the GA dashboard to the
 				// default property for the passed in index, and your desired scope. GA allows up to 20 dimensions for a free account
-				gaPlugin.setDimension(nativePluginResultHandler, nativePluginErrorHandler, 1, "Purple");
+				gaPlugin.setVariable( nativePluginResultHandler, nativePluginErrorHandler, 1, "Purple");
 
 				// dimensions are are passed to the next event sent to GA. go ahead and fire off an event with the label (key) of your choice
 				// In this example, the label for custom dimension 1 will show up in the dashboard as "favoriteColor". This is much more efficent
 				// than the old custom variable method introduced in V1, (plus you get 20 free dimensions vs 5 free custom variables)
-				gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "event with dimension", "set variable", "favoriteColor", 1);
+				gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "event with variable", "set variable", "favoriteColor", 1);
 			}
         
 			function PageButtonClicked() {
@@ -92,8 +88,7 @@
     <div class="space"></div>
     <div>
     	<a href="#" class="btn large" onclick="TrackButtonClicked();">Track Event</a>
-    	<a href="#" class="btn large" onclick="DimensionButtonClicked();">Track Event with Dimension</a>
-    	<a href="#" class="btn large" onclick="MetricButtonClicked();">Track Event with Metric</a>
+    	<a href="#" class="btn large" onclick="VariableButtonClicked();">Track Event with Variable</a>
     	<a href="#" class="btn large" onclick="PageButtonClicked();">Track Page</a>
     	<a href="#" class="btn large" onclick="TransactionButtonClicked();">Track Transaction</a>
     </div>

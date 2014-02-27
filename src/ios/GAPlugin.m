@@ -149,46 +149,25 @@
 }
 
 
-- (void) setMetric:(CDVInvokedUrlCommand*)command
-{
-    NSString            *callbackId = command.callbackId;
-    NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
-    NSNumber            value = [[command.arguments objectAtIndex:1] longLongValue];
-
-    if (inited)
-    {
-        NSError *error = nil;
-        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index metric:value];
-
-        if (result)
-            [self successWithMessage:[NSString stringWithFormat:@"setVariable: index = %d, value = %lld;", index, value] toID:callbackId];
-        else
-            [self failWithMessage:@"setMetric failed" toID:callbackId withError:error];
-    }
-    else
-        [self failWithMessage:@"setMetric failed - not initialized" toID:callbackId withError:nil];
-}
-
-- (void) setDimension:(CDVInvokedUrlCommand*)command
+- (void) setVariable:(CDVInvokedUrlCommand*)command
 {
     NSString            *callbackId = command.callbackId;
     NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
     NSString            *value = [command.arguments objectAtIndex:1];
-    
+
     if (inited)
     {
         NSError *error = nil;
         BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index dimension:value];
-        
+
         if (result)
-            [self successWithMessage:[NSString stringWithFormat:@"setDimension: index = %d, value = %@;", index, value] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"setVariable: index = %d, value = %@;", index, value] toID:callbackId];
         else
-            [self failWithMessage:@"setDimension failed" toID:callbackId withError:error];
+            [self failWithMessage:@"setVariable failed" toID:callbackId withError:error];
     }
     else
-        [self failWithMessage:@"setDimension failed - not initialized" toID:callbackId withError:nil];
+        [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
-
 
 -(void)successWithMessage:(NSString *)message toID:(NSString *)callbackID
 {
