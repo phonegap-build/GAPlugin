@@ -7,33 +7,9 @@ Before you can begin collecting metrics data, you need to set up a GoogleAnalyti
 
 ## Installation:
 
-### local
+    cordova plugin add https://github.com/hx-markterry/GAPlugin.git
 
-Add the following feature tag in your config.xml
-
-	<feature name="GAPlugin" >
-		< param name="android-package" value="com.adobe.plugins.GAPlugin"/>
-	</feature>
-
-This plugin is based on [plugman](https://github.com/apache/cordova-plugman). to install it to your app,
-simply execute plugman as follows;
-
-	plugman install --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
-
-	where
-		[PLATFORM] = ios or android
-		[TARGET-PATH] = path to folder containing your xcode project
-		[PLUGIN-PATH] = path to folder containing this plugin
-		
-For additional info, take a look at the [Plugman Documentation](https://github.com/apache/cordova-plugman/blob/master/README.md)
-
-### PhoneGap Build
-
-To use this plugin with PhoneGap Build, add the following plugin reference to your config.xml
-
-	<gap:plugin name="com.adobe.plugins.gaplugin" />
-
-## Usage
+## Usage:
 The plugin creates the object `window.plugins.gaPlugin
 
 After onDeviceReady, create a local var and startup the plugin like so;
@@ -45,8 +21,14 @@ After onDeviceReady, create a local var and startup the plugin like so;
 		gaPlugin.init(successHandler, errorHandler, "UA-12345678-1", 10);
 	}
 
+This package includes an Example folder containing an index.html file showing how all of this fits together.
+Note that the contents of Examples does not get installed anywhere by pluginstall. Its just there to provide a usage example.
+
+### init()
+
 To get things rolling you need to call init() when your device ready function fires.
 Init takes 4 arguments;
+
 	1)	success - a function that will be called on success
 	2)	fail - a function that will be called on error.
 	3)	id - Your Google Analytics account ID of the form; UA-XXXXXXXX-X
@@ -59,6 +41,8 @@ Init takes 4 arguments;
 Example:
 	
 	gaPlugin.init(successHandler, errorHandler, "UA-12345678-1", 10);
+
+### trackEvent()
 	
 To track an event, call (oddly enough) trackEvent().
 trackEvent takes 6 arguments;
@@ -75,10 +59,13 @@ Example:
 	gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "Button", "Click", "event only", 1);
 
 TrackEvent covers most of what you need, but there may be cases where you want to pass arbitrary data.
-setVariable() lets you pass values by index (Up to 20, on free accounts).
+
+### setDimension()
+
+setDimension() lets you pass values by index (Up to 20, on free accounts).
 For free accounts, each variable is given an index from 1 - 20. Reusing an existing index simply overwrites
 the previous value. Passing an index out of range fails silently, with no data sent. The variables will be sent ONLY for the next trackEvent or trackPage, after which those indexes will be available for reuse.
-setVariable() accepts 4 arguments;
+setDimension() accepts 4 arguments;
 
 	1)	resultHandler - a function that will be called on success
 	2)	errorHandler - a function that will be called on error.
@@ -87,11 +74,13 @@ setVariable() accepts 4 arguments;
 
 Example:
 
-	gaPlugin.setVariable( nativePluginResultHandler, nativePluginErrorHandler, 1, "Purple");
+	gaPlugin.setDimension( nativePluginResultHandler, nativePluginErrorHandler, 1, "Purple");
 	
 ####Important:
 Variable values are assigned to what Google calls Custom Dimensions in the dashboard. Prior to calling setVariable() in your client for a particular index, you need to create a slot in the GA dashboard. When you do so, you will be able to assign a name for the dimension, its index, and its scope. More info on creating Custom Dimensions can be found [here](https://support.google.com/analytics/answer/2709829?hl=en&ref_topic=2709827).	
 The next event or page view you send after setVariable will contain your variable at Custom Dimension specified by the index value you passed in the setVariable call. This [Example](https://github.com/phonegap-build/GAPlugin/blob/master/Example/index.html) app shows how you might use that next event to specify a label for the variable you just set.
+
+### trackPage()
 	
 In addition to events and variables, you can also log page visits with trackPage(). Unlike variables, however, page hits do not require a subsequent call to trackEvent() as they are considered unique events in and of themselves.
 trackPage() takes 3 arguments;
@@ -103,7 +92,53 @@ trackPage() takes 3 arguments;
 Example:
 
 	gaPlugin.trackPage( nativePluginResultHandler, nativePluginErrorHandler, "some.url.com");
+
+### trackTransaction()
 	
+Transactions can also be logged with 3 arguments:
+
+	1)	resultHandler - a function that will be called on success
+	2)	errorHandler - a function that will be called on error.
+	3)	transaction object - A JSON object containing details of the transaction.
+
+The JSON transaction object contains the following structure and keys:
+
+	{
+		"transactionId": "12345",
+		"orderTotal": (0.01 * 1000000),
+		"affiliation": "Foo",
+		"totalTax": (0.01 * 1000000),
+		"shippingCost": 0,
+		"items": [
+			{
+				"sku": "4321",
+				"name": "bar",
+				"price": (0.01 * 1000000),
+				"quantity": 1,
+				"category": "qux",
+			}
+		]
+	}
+
+Example: 
+
+	gaPlugin.trackTransaction(nativePluginResultHandler, nativePluginErrorHandler, transObj);
+
+### trackCaughtException(), trackUncaughtException()
+
+Exceptions can be logged with 3 arguments:
+
+	1)	resultHandler - a function that will be called on success
+	2)	errorHandler - a function that will be called on error.
+	3)	message - A string detailing the exception
+
+Examples:
+
+	gaPlugin.trackCaughtException(nativePluginResultHandler, nativePluginErrorHandler, message);
+	gaPlugin.trackUncaughtException(nativePluginResultHandler, nativePluginErrorHandler, message);
+
+### exit()
+
 Finally, when your app shuts down, you'll want to cleanup after yourself by calling exit();
 exit() accepts 2 arguments;
 
@@ -113,9 +148,6 @@ Example:
 
 	gaPlugin.exit(nativePluginResultHandler, nativePluginErrorHandler);
 	
-This package includes an Example folder containing an index.html file showing how all of this fits together.
-Note that the contents of Examples does not get installed anywhere by pluginstall. Its just there to provide a usage example.
-
 ## More Info
 	
 GAPlugin includes libraries from Google Analytics SDK for iOS and for Android.
