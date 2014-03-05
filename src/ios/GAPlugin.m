@@ -153,7 +153,8 @@
 {
     NSString            *callbackId = command.callbackId;
     NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
-    NSNumber            value = [[command.arguments objectAtIndex:1] longLongValue];
+    int                 i = [[command.arguments objectAtIndex:1] intValue];
+    NSNumber            *value = [NSNumber numberWithInt:i];
 
     if (inited)
     {
@@ -161,7 +162,7 @@
         BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index metric:value];
 
         if (result)
-            [self successWithMessage:[NSString stringWithFormat:@"setVariable: index = %d, value = %lld;", index, value] toID:callbackId];
+            [self successWithMessage:[NSString stringWithFormat:@"setMetric: index = %d, value = %d;", index, value] toID:callbackId];
         else
             [self failWithMessage:@"setMetric failed" toID:callbackId withError:error];
     }
