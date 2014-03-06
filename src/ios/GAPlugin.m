@@ -149,7 +149,27 @@
 }
 
 
-- (void) setVariable:(CDVInvokedUrlCommand*)command
+- (void) setMetric:(CDVInvokedUrlCommand*)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
+    NSNumber            *value = [NSNumber numberWithInt: [[command.arguments objectAtIndex:1] intValue]];
+
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index metric:value];
+
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"setMetric: index = %d, value = %@;", index, value] toID:callbackId];
+        else
+            [self failWithMessage:@"setMetric failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"setMetric failed - not initialized" toID:callbackId withError:nil];
+}
+
+- (void) setDimension:(CDVInvokedUrlCommand*)command
 {
     NSString            *callbackId = command.callbackId;
     NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
