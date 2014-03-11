@@ -18,6 +18,10 @@
 - (void) exitGA:(CDVInvokedUrlCommand*)command;
 - (void) trackEvent:(CDVInvokedUrlCommand*)command;
 - (void) trackPage:(CDVInvokedUrlCommand*)command;
-- (void) setVariable:(CDVInvokedUrlCommand*)command;
+- (void) trackTransaction:(CDVInvokedUrlCommand*)command;
+- (void) trackCaughtException:(CDVInvokedUrlCommand*)command;
+- (void) trackUncaughtException:(CDVInvokedUrlCommand*)command;
+- (void) setDimension:(CDVInvokedUrlCommand*)command;
+- (void) setMetric:(CDVInvokedUrlCommand*)command;
 
 @end

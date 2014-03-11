@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="src/android/libGoogleAnalyticsV2.jar"/>
+	<classpathentry kind="lib" path="/Users/markterry/bin/adt-bundle-mac-x86_64-20131030/sdk/platforms/android-17/android.jar"/>
+	<classpathentry kind="lib" path="/Users/markterry/git/tripapp-cordova/node_modules/cordova/lib/cordova-android/framework/bin/classes.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -29,6 +29,31 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'trackPage', [pageURL]);
     };
 
+
+   // log a transaction
+   //
+   // transObj = transaction JSON
+   GAPlugin.prototype.trackTransaction = function(success, fail, transObj){
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackTransaction', [transObj]);
+   };
+
+
+   // log a caught exception
+   //
+   // message = exception message
+   GAPlugin.prototype.trackCaughtException = function(success, fail, message){
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackCaughtException', [message]);
+   };
+
+
+   // log an uncaught exception
+   //
+   // message = exception message
+   GAPlugin.prototype.trackUncaughtException = function(success, fail, message){
+       return cordovaRef.exec(success, fail, 'GAPlugin', 'trackUncaughtException', [message]);
+   };
+
+
     // Set a custom variable. The variable set is included with
     // the next event only. If there is an existing custom variable at the specified
     // index, it will be overwritten by this one.
@@ -39,7 +64,11 @@
     GAPlugin.prototype.setVariable = function(success, fail, index, value) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
     };
-    
+
+    GAPlugin.prototype.setDimension = function(success, fail, index, value) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'setDimension', [index, value]);
+    };
+
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };

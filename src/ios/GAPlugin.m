@@ -72,7 +72,104 @@
         [self failWithMessage:@"trackPage failed - not initialized" toID:callbackId withError:nil];
 }
 
-- (void) setVariable:(CDVInvokedUrlCommand*)command
+- (void) trackTransaction:(CDVInvokedUrlCommand *)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSDictionary *jsonObj = [command.arguments objectAtIndex:0];
+    
+    if (inited)
+    {
+       NSError *error = nil;
+        
+        GAITransaction *transaction = [GAITransaction transactionWithId:[jsonObj objectForKey:@"transactionId"]            // (NSString) Transaction ID, should be unique.
+            withAffiliation:[jsonObj objectForKey:@"affiliation"]];      // (NSString) Affiliation
+        
+        transaction.taxMicros = [[jsonObj objectForKey:@"totalTax"] longLongValue];           // (int64_t) Total tax (in micros)
+        transaction.shippingMicros = [[jsonObj objectForKey:@"shippingCost"] longLongValue];                   // (int64_t) Total shipping (in micros)
+        transaction.revenueMicros = [[jsonObj objectForKey:@"orderTotal"] longLongValue];       // (int64_t) Total revenue (in micros)
+        
+        NSArray *items = [jsonObj objectForKey:@"items"];
+        for (NSDictionary *item in items) {
+            [transaction addItemWithCode:[item objectForKey:@"sku"]                         // (NSString) Product SKU
+                               name:[item objectForKey:@"name"]             // (NSString) Product name
+                           category:[item objectForKey:@"category"]               // (NSString) Product category
+                        priceMicros:[[item objectForKey:@"price"] longLongValue]        // (int64_t)  Product price (in micros)
+                           quantity:[[item objectForKey:@"quantity"] longLongValue]];                              // (NSInteger)  Product quantity
+        }
+        BOOL result = [[[GAI sharedInstance] defaultTracker] sendTransaction:transaction];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackTransaction: url = %@", jsonObj] toID:callbackId];
+        else
+            [self failWithMessage:@"trackTransaction failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackTransaction failed - not initialized" toID:callbackId withError:nil];
+}
+
+
+- (void) trackCaughtException:(CDVInvokedUrlCommand *)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSString            *message = [command.arguments objectAtIndex:0];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendException:NO // Boolean indicates non-fatal exception.
+                                                                    withDescription:message];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackCaughtException: message = %@", message] toID:callbackId];
+        else
+            [self failWithMessage:@"trackCaughtException failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackCaughtException failed - not initialized" toID:callbackId withError:nil];
+}
+
+- (void) trackUncaughtException:(CDVInvokedUrlCommand *)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSString            *message = [command.arguments objectAtIndex:0];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendException:YES // Boolean indicates fatal exception.
+                                                                    withDescription:message];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"trackUncaughtException: message = %@", message] toID:callbackId];
+        else
+            [self failWithMessage:@"trackUncaughtException failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"trackUncaughtException failed - not initialized" toID:callbackId withError:nil];
+}
+
+
+- (void) setMetric:(CDVInvokedUrlCommand*)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
+    NSNumber            *value = [NSNumber numberWithInt: [[command.arguments objectAtIndex:1] intValue]];
+
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] setCustom:index metric:value];
+
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"setMetric: index = %d, value = %@;", index, value] toID:callbackId];
+        else
+            [self failWithMessage:@"setMetric failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"setMetric failed - not initialized" toID:callbackId withError:nil];
+}
+
+- (void) setDimension:(CDVInvokedUrlCommand*)command
 {
     NSString            *callbackId = command.callbackId;
     NSInteger           index = [[command.arguments objectAtIndex:0] intValue];
