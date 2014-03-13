@@ -92,6 +92,26 @@
         [self failWithMessage:@"setVariable failed - not initialized" toID:callbackId withError:nil];
 }
 
+- (void) sendException:(CDVInvokedUrlCommand*)command
+{
+    NSString            *callbackId = command.callbackId;
+    NSString            *description = [command.arguments objectAtIndex:0];
+    Boolean             isFatal = [[command.arguments objectAtIndex:1] boolValue];
+    
+    if (inited)
+    {
+        NSError *error = nil;
+        BOOL    result = [[[GAI sharedInstance] defaultTracker] sendException:isFatal withDescription:description];
+        
+        if (result)
+            [self successWithMessage:[NSString stringWithFormat:@"sendException: isFatal = %s, description = %@;", isFatal ? "true" : "false", description] toID:callbackId];
+        else
+            [self failWithMessage:@"sendException failed" toID:callbackId withError:error];
+    }
+    else
+        [self failWithMessage:@"sendException failed - not initialized" toID:callbackId withError:nil];
+}
+
 -(void)successWithMessage:(NSString *)message toID:(NSString *)callbackID
 {
     CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
