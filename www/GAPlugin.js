@@ -40,6 +40,14 @@
         return cordovaRef.exec(success, fail, 'GAPlugin', 'setVariable', [index, value]);
     };
     
+    // Send an exception.
+    //
+    // description = a description of the exception (up to 100 characters). (Optional)
+    // isFatal = indicates whether the exception was fatal. true indicates fatal.
+    GAPlugin.prototype.sendException = function(success, fail, description, isFatal) {
+        return cordovaRef.exec(success, fail, 'GAPlugin', 'sendException', [description, !!isFatal]);
+    };
+    
     GAPlugin.prototype.exit = function(success, fail) {
         return cordovaRef.exec(success, fail, 'GAPlugin', 'exitGA', []);
     };
