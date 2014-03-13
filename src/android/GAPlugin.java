@@ -75,6 +75,15 @@ public class GAPlugin extends CordovaPlugin {
 				callback.error(e.getMessage());
 			}
 		}
+		else if (action.equals("sendException")) {
+			try {
+				tracker.sendException(args.getString(0), args.getBoolean(1));
+				callback.success("sendException passed - isFatal = " + args.getBoolean(1) + "; message = " + args.getString(0));
+				return true;
+			} catch (final Exception e) {
+				callback.error(e.getMessage());
+			}
+		}
 		return false;
 	}
 }
