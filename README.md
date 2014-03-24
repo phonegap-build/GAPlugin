@@ -12,7 +12,7 @@ Before you can begin collecting metrics data, you need to set up a GoogleAnalyti
 Add the following feature tag in your config.xml
 
 	<feature name="GAPlugin" >
-		< param name="android-package" value="com.adobe.plugins.GAPlugin"/>
+		<param name="android-package" value="com.adobe.plugins.GAPlugin"/>
 	</feature>
 
 This plugin is based on [plugman](https://github.com/apache/cordova-plugman). to install it to your app,
