@@ -42,15 +42,18 @@
         </config-file>
 
         <source-file src="src/ios/GAPlugin.m" />
-        <source-file src="src/ios/GoogleAnalytics.a" framework="true" />
+        <source-file src="src/ios/libGoogleAnalyticsServices.a" framework="true" />
 
-        <header-file src="src/ios/GAITransactionItem.h" />
-        <header-file src="src/ios/GAITransaction.h" />
-        <header-file src="src/ios/GAITracker.h" />
-        <header-file src="src/ios/GAITrackedViewController.h" />
         <header-file src="src/ios/GAI.h" />
+        <header-file src="src/ios/GAIDictionaryBuilder.h" />
+        <header-file src="src/ios/GAIFields.h" />
+        <header-file src="src/ios/GAILogger.h" />
+        <header-file src="src/ios/GAITrackedViewController.h" />
+        <header-file src="src/ios/GAITracker.h" />
         <header-file src="src/ios/GAPlugin.h" />
 
+        <framework src="libsqlite3.dylib" />
+        <framework src="libz.dylib" />
         <framework src="CoreData.framework" />
         <framework src="SystemConfiguration.framework" />
     </platform>

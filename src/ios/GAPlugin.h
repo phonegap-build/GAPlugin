@@ -12,6 +12,7 @@
 @interface GAPlugin : CDVPlugin
 {
     BOOL    inited;
+    NSMutableDictionary* _customDimensions;
 }
 
 - (void) initGA:(CDVInvokedUrlCommand*)command;
@@ -19,5 +20,8 @@
 - (void) trackEvent:(CDVInvokedUrlCommand*)command;
 - (void) trackPage:(CDVInvokedUrlCommand*)command;
 - (void) setVariable:(CDVInvokedUrlCommand*)command;
+
+- (void) successWithMessage:(NSString*)message toID:(NSString*)callbackID;
+- (void) failWithMessage:(NSString*)message toID:(NSString*)callbackID withError:(NSError*) error;
 
 @end
