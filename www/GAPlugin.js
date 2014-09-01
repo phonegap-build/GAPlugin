@@ -1,5 +1,5 @@
 (function(){
-    var cordovaRef = window.PhoneGap || window.Cordova || window.cordova;
+    var cordovaRef = window.PhoneGap || window.cordova || window.Cordova;
 
     function GAPlugin() { }
 
