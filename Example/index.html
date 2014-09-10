@@ -55,7 +55,27 @@
 			function PageButtonClicked() {
 				gaPlugin.trackPage( nativePluginResultHandler, nativePluginErrorHandler, "some.url.com");
 			}
-			
+
+			function TransactionButtonClicked() {
+				var transObj = {
+					"transactionId": "a" + new Date().getTime(),
+					"orderTotal": (0.01 * 1000000),
+					"affiliation": "Foo",
+					"totalTax": (0.01 * 1000000),
+					"shippingCost": 0,
+					"items": [
+						{
+							"sku": "4321",
+							"name": "bar",
+							"price": (0.01 * 1000000),
+							"quantity": 1,
+							"category": "qux",
+						}
+					]
+				}
+				gaPlugin.trackTransaction(nativePluginResultHandler, nativePluginErrorHandler, transObj);
+			}
+
 			function goingAway() {
 				gaPlugin.exit(nativePluginResultHandler, nativePluginErrorHandler);
 			}
@@ -70,6 +90,7 @@
     	<a href="#" class="btn large" onclick="TrackButtonClicked();">Track Event</a>
     	<a href="#" class="btn large" onclick="VariableButtonClicked();">Track Event with Variable</a>
     	<a href="#" class="btn large" onclick="PageButtonClicked();">Track Page</a>
+    	<a href="#" class="btn large" onclick="TransactionButtonClicked();">Track Transaction</a>
     </div>
   </body>
 </html>

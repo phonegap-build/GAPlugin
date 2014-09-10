@@ -8,6 +8,8 @@
 
 #import <Cordova/CDV.h>
 #import "GAI.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
 
 @interface GAPlugin : CDVPlugin
 {
@@ -18,6 +20,10 @@
 - (void) exitGA:(CDVInvokedUrlCommand*)command;
 - (void) trackEvent:(CDVInvokedUrlCommand*)command;
 - (void) trackPage:(CDVInvokedUrlCommand*)command;
-- (void) setVariable:(CDVInvokedUrlCommand*)command;
+- (void) trackException:(CDVInvokedUrlCommand*)command;
+- (void) trackTransaction:(CDVInvokedUrlCommand*)command;
+- (void) setCustomDimension:(CDVInvokedUrlCommand*)command;
+- (void) setCustomMetric:(CDVInvokedUrlCommand*)command;
+- (void) setOptOut:(CDVInvokedUrlCommand*)command;
 
 @end

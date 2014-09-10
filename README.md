@@ -75,6 +75,7 @@ Example:
 	gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "Button", "Click", "event only", 1);
 
 TrackEvent covers most of what you need, but there may be cases where you want to pass arbitrary data.
+
 setVariable() lets you pass values by index (Up to 20, on free accounts).
 For free accounts, each variable is given an index from 1 - 20. Reusing an existing index simply overwrites
 the previous value. Passing an index out of range fails silently, with no data sent. The variables will be sent ONLY for the next trackEvent or trackPage, after which those indexes will be available for reuse.
@@ -104,6 +105,46 @@ Example:
 
 	gaPlugin.trackPage( nativePluginResultHandler, nativePluginErrorHandler, "some.url.com");
 	
+Transactions can also be logged with 3 arguments:
+
+	1)	resultHandler - a function that will be called on success
+	2)	errorHandler - a function that will be called on error.
+	3)	transaction object - A JSON object containing details of the transaction.
+
+The JSON transaction object contains the following structure and keys:
+
+	{
+		"transactionId": "12345",
+		"orderTotal": (0.01 * 1000000),
+		"affiliation": "Foo",
+		"totalTax": (0.01 * 1000000),
+		"shippingCost": 0,
+		"items": [
+			{
+				"sku": "4321",
+				"name": "bar",
+				"price": (0.01 * 1000000),
+				"quantity": 1,
+				"category": "qux",
+			}
+		]
+	}
+
+Example: 
+
+	gaPlugin.trackTransaction(nativePluginResultHandler, nativePluginErrorHandler, transObj);
+
+Exceptions can be logged with 3 arguments:
+
+	1)	resultHandler - a function that will be called on success
+	2)	errorHandler - a function that will be called on error.
+	3)	message - A string detailing the exception
+
+Examples:
+
+	gaPlugin.trackCaughtException(nativePluginResultHandler, nativePluginErrorHandler, message);
+	gaPlugin.trackUncaughtException(nativePluginResultHandler, nativePluginErrorHandler, message);
+
 Finally, when your app shuts down, you'll want to cleanup after yourself by calling exit();
 exit() accepts 2 arguments;
 
