@@ -64,7 +64,7 @@ module.exports = {
             var error;
             error = ga.appname(value);
             if (error) {
-                reslut.error(error, false);
+                result.error(error, false);
             }
             else {
                 result.noResult(false);
@@ -85,6 +85,7 @@ module.exports = {
         else 
         {
             result.ok(ga.lastpayload(), false);
+
         }
     },
 
@@ -148,14 +149,15 @@ module.exports = {
         }
 
         // if (!error && args[2]) {
-        //     value = JSON.parse(decodeURIComponent(args[2]));
-        //     error = ga.gauuid(value);
+            // value = JSON.parse(decodeURIComponent(args[2]));
+            error = ga.gauuid("");
         // }
    
         // if (!error && args[3]) {
         //     value = JSON.parse(decodeURIComponent(args[3]));
         //     error = ga.setUseQueue(value);
         // }
+
         if (error) {
             result.error(error, false);
         }
@@ -164,9 +166,18 @@ module.exports = {
         }
     },
 
-    trackEvent: function (success, fail, args, env) {
+     trackPage: function (success, fail, args, env) {
+         module.exports.trackAll(success, fail, args, env, "pageview");
+     },
+
+     // Event tracking, &t=event, Category and action are required
+     trackEvent: function (success, fail, args, env) {
+         module.exports.trackAll(success, fail, args, env, "event");
+    },
+
+    trackAll: function (success, fail, args, env, sTrackType) {
         var result = new PluginResult(args, env);
-        var sTrackType,
+        var //sTrackType,
             error;
 
         if (!args || !args[0]){
@@ -174,7 +185,7 @@ module.exports = {
         }
 
         if (!error) {
-            sTrackType = JSON.parse(decodeURIComponent(args[0]));
+            // sTrackType = JSON.parse(decodeURIComponent(args[0]));
             error = ga.processtracking(sTrackType, args);
         }
 
@@ -186,7 +197,6 @@ module.exports = {
         }
     }
 };
-
 
 // GA module
 var ga = (function() {
@@ -222,6 +232,7 @@ var ga = (function() {
             return "";
         }
         else {
+            // return "Test";
             return m_account;
         }
     };
@@ -247,6 +258,7 @@ var ga = (function() {
             // If no storage uuid, create one with random
             if ("" == m_uuid) {
                 m_uuid = storage.loadData('uuid');
+                m_uuid = storage.saveData("");
             }
             if ("" == m_uuid){
                 m_uuid = randomizeUuid();
@@ -254,7 +266,7 @@ var ga = (function() {
             // store UUID
             return storage.saveData("uuid", m_uuid);
         }
-        return m_uuid;
+       return m_uuid;
     };
 
     var setUseQueue = function(value) {
@@ -370,28 +382,26 @@ var ga = (function() {
         if (!bAccountSet) {
             error = "Need GA account number";
         }
-        if (!m_uuid) {
-            error = "UUID not set. Set to empty string for a random UUID";
-        }
+
         if (!m_appName){
             error = "App Name not set";
         }
 
-        // if (!m_uuid) {
-        //     error = "UUID not set. Set to empty string for a random UUID";
-        // }
+        if (!m_uuid) {
+            error = "UUID not set. Set to empty string for a random UUID";
+        }
 
         if (!error) {
-            // optionString = "v=1&tid=" + m_account + "&cid=" + m_uuid + "&an=" + m_appName;
             optionString = "v=1&tid=" + m_account + "&cid=" + m_uuid + "&an=" + m_appName;
+            // optionString = "v=1&tid=" + m_account + "&an=" + m_appName;
             
             switch (trackType)
             {
                 case "pageview":
                     optionString += "&t=pageview";
-                    optionString += getParameter(args, "dp", "pageURL");
-                    optionString += getParameter(args, "dt", "pageTitle");
-                    optionString += getParameter(args, "dh", "hostName");
+                    optionString += getParameter(args, "dp", 0);
+                    // optionString += getParameter(args, "dt", 1);
+                    // optionString += getParameter(args, "dh", 2);
                     break;
 
                 case "event":
@@ -447,7 +457,6 @@ var ga = (function() {
                 error = sendData(optionString, m_fncbSendSuccess, m_fncbSendFail);
             }
         }
-
         return error;
     };
 
