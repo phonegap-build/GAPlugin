@@ -232,7 +232,6 @@ var ga = (function() {
             return "";
         }
         else {
-            // return "Test";
             return m_account;
         }
     };
@@ -393,23 +392,38 @@ var ga = (function() {
 
         if (!error) {
             optionString = "v=1&tid=" + m_account + "&cid=" + m_uuid + "&an=" + m_appName;
-            // optionString = "v=1&tid=" + m_account + "&an=" + m_appName;
             
             switch (trackType)
             {
                 case "pageview":
+
+                    var parser = document.createElement('a');
+                    parser.href = JSON.parse(decodeURIComponent(args[0]));
+
                     optionString += "&t=pageview";
-                    optionString += getParameter(args, "dp", 0);
-                    // optionString += getParameter(args, "dt", 1);
-                    // optionString += getParameter(args, "dh", 2);
+                    optionString += "&dh=";
+                    optionString += parser.hostname;
+                    optionString += "&dp=";
+                    optionString += parser.pathname;
+                    // optionString += "&dt=";
+                    // optionString += parser.??????????????
+
+                    // optionString += getParameter(args, "dp", "pageURL");
+                    // optionString += getParameter(args, "dt", "pageTitle");
+                    // optionString += getParameter(args, "dh", "hostName");                    
                     break;
 
                 case "event":
                     optionString += "&t=event";
-                    optionString += getParameter(args, "ec", "eventCategory");
-                    optionString += getParameter(args, "ea", "eventAction");
-                    optionString += getParameter(args, "el", "eventLabel");
-                    optionString += getParameter(args, "ev", "eventValue");
+                    optionString += getParameter(args, "ec", 0);
+                    optionString += getParameter(args, "ea", 1);
+                    optionString += getParameter(args, "el", 2);
+                    optionString += getParameter(args, "ev", 3);
+
+                    // optionString += getParameter(args, "ec", "eventCategory");
+                    // optionString += getParameter(args, "ea", "eventAction");
+                    // optionString += getParameter(args, "el", "eventLabel");
+                    // optionString += getParameter(args, "ev", "eventValue");
                     break;
 
                 case "transaction":
