@@ -195,6 +195,11 @@ module.exports = {
         else {
             result.ok("Finished " + sTrackType + " tracking", false);
         }
+    },
+
+    setVariable: function (success, fail, args, env) {
+        var result = new PluginResult(args, env);
+           
     }
 };
 
@@ -397,16 +402,8 @@ var ga = (function() {
             {
                 case "pageview":
 
-                    var parser = document.createElement('a');
-                    parser.href = JSON.parse(decodeURIComponent(args[0]));
-
                     optionString += "&t=pageview";
-                    optionString += "&dh=";
-                    optionString += parser.hostname;
-                    optionString += "&dp=";
-                    optionString += parser.pathname;
-                    // optionString += "&dt=";
-                    // optionString += parser.??????????????
+                    optionString += getParameter(args, "dp", 0);
 
                     // optionString += getParameter(args, "dp", "pageURL");
                     // optionString += getParameter(args, "dt", "pageTitle");
