@@ -199,6 +199,21 @@ module.exports = {
 
     setVariable: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
+        var dimensionValue = JSON.parse(decodeURIComponent(args[1]));;
+        error = ga('set', 'dimension1', dimensionValue);
+
+
+        if (error) {
+            result.error(error, false);
+        }
+        else {
+            result.ok("Custom dimension set", false);
+        }
+           
+    },
+
+    exitGA: function (success, fail, args, env) {
+        var result = new PluginResult(args, env);
            
     }
 };
