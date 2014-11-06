@@ -148,15 +148,8 @@ module.exports = {
             error = ga.appname(value);
         }
 
-        // if (!error && args[2]) {
-            // value = JSON.parse(decodeURIComponent(args[2]));
-            error = ga.gauuid("");
-        // }
-   
-        // if (!error && args[3]) {
-        //     value = JSON.parse(decodeURIComponent(args[3]));
-        //     error = ga.setUseQueue(value);
-        // }
+        // Set random uuid
+        error = ga.gauuid("");
 
         if (error) {
             result.error(error, false);
@@ -170,22 +163,19 @@ module.exports = {
          module.exports.trackAll(success, fail, args, env, "pageview");
      },
 
-     // Event tracking, &t=event, Category and action are required
      trackEvent: function (success, fail, args, env) {
          module.exports.trackAll(success, fail, args, env, "event");
     },
 
     trackAll: function (success, fail, args, env, sTrackType) {
         var result = new PluginResult(args, env);
-        var //sTrackType,
-            error;
+        var error;
 
         if (!args || !args[0]){
             error = "Need track type argument";
         }
 
         if (!error) {
-            // sTrackType = JSON.parse(decodeURIComponent(args[0]));
             error = ga.processtracking(sTrackType, args);
         }
 
@@ -199,9 +189,20 @@ module.exports = {
 
     setVariable: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
-        var dimensionValue = JSON.parse(decodeURIComponent(args[1]));;
-        error = ga('set', 'dimension1', dimensionValue);
+        var error,
+            dimensionValue,
+            dimensionIndex;
 
+        if (!args[0] || !args[1]){
+            error = "Index and value of custom dimension are required";
+        }
+
+        if (!error) {
+            dimensionIndex = JSON.parse(decodeURIComponent(args[0]));
+            dimensionValue = JSON.parse(decodeURIComponent(args[1]));
+
+            error = ga.customdimension(dimensionIndex, dimensionValue);
+        }
 
         if (error) {
             result.error(error, false);
@@ -224,12 +225,14 @@ var ga = (function() {
         m_account = "", 
         m_appName = "",
         m_lastPayload = "",
+        m_customDimension = "",
         m_fncbSendSuccess,
         m_fncbSendFail,
         bAccountSet = false,
         bRandomUuid = false,
         bSendBusy = false,
         bUseQueue = false; 
+        bCustomDimension = false;
 
     var DEFAULT_DELAY = 500,
         MAX_TIMEOUT_DELAY = 10000, // max ms to retry timeouted request
@@ -257,6 +260,7 @@ var ga = (function() {
     };
 
     var appname = function(value) {
+
         if (undefined != value) {
             if (value.length == 0) {
                 return "AppName cannot be empty";
@@ -286,6 +290,23 @@ var ga = (function() {
             return storage.saveData("uuid", m_uuid);
         }
        return m_uuid;
+    };
+
+    var customdimension = function(index, value) {
+
+        if ( (undefined != value) && (undefined != index) ){ 
+            // Set custom dimension for next function call
+            m_customDimension = "&cd";
+            // index is the index of the custom dimension in user's GA account
+            m_customDimension += index;
+            m_customDimension += "=";
+            m_customDimension += value;
+
+            bCustomDimension = true;
+            return "";
+        }
+
+        return m_customDimension;
     };
 
     var setUseQueue = function(value) {
@@ -402,27 +423,26 @@ var ga = (function() {
             error = "Need GA account number";
         }
 
-        if (!m_appName){
-            error = "App Name not set";
-        }
-
         if (!m_uuid) {
             error = "UUID not set. Set to empty string for a random UUID";
         }
 
         if (!error) {
-            optionString = "v=1&tid=" + m_account + "&cid=" + m_uuid + "&an=" + m_appName;
+            // Removed app name because client file does not take it as an argument
+            optionString = "v=1&tid=" + m_account + "&cid=" + m_uuid;
             
             switch (trackType)
             {
                 case "pageview":
+                    var parser = document.createElement('a');
+                    parser.href = JSON.parse(decodeURIComponent(args[0]));
 
                     optionString += "&t=pageview";
-                    optionString += getParameter(args, "dp", 0);
+                    optionString += "&dh=";
+                    optionString += parser.hostname;
+                    optionString += "&dp=";
+                    optionString += parser.pathname;
 
-                    // optionString += getParameter(args, "dp", "pageURL");
-                    // optionString += getParameter(args, "dt", "pageTitle");
-                    // optionString += getParameter(args, "dh", "hostName");                    
                     break;
 
                 case "event":
@@ -430,12 +450,7 @@ var ga = (function() {
                     optionString += getParameter(args, "ec", 0);
                     optionString += getParameter(args, "ea", 1);
                     optionString += getParameter(args, "el", 2);
-                    optionString += getParameter(args, "ev", 3);
-
-                    // optionString += getParameter(args, "ec", "eventCategory");
-                    // optionString += getParameter(args, "ea", "eventAction");
-                    // optionString += getParameter(args, "el", "eventLabel");
-                    // optionString += getParameter(args, "ev", "eventValue");
+                    optionString += getParameter(args, "ev", 3);        
                     break;
 
                 case "transaction":
@@ -445,7 +460,7 @@ var ga = (function() {
                     optionString += getParameter(args, "tr", "tRevenue");
                     optionString += getParameter(args, "ts", "tShipn");
                     optionString += getParameter(args, "tt", "tTax");
-                    optionString += getParameter(args, "cu", "tCurr");
+                    optionStribUseng += getParameter(args, "cu", "tCurr");
                     break;
 
                 case "item":
@@ -460,6 +475,12 @@ var ga = (function() {
                     error = "Invalid track type";
                     break;
             }
+
+            // Check if there is a custom dimension to append to payload
+            if (bCustomDimension) {
+                optionString += m_customDimension;
+                bCustomDimension = false;    
+            }    
         
             m_lastPayload = optionString;
 
@@ -581,6 +602,7 @@ var ga = (function() {
         appname: appname,
         gauuid: gauuid,
         lastpayload: lastpayload,
+        customdimension: customdimension,
         randomuuid: randomuuid,
         processtracking: processtracking,
         setUseQueue: setUseQueue,
