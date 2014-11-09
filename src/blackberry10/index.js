@@ -145,7 +145,7 @@ module.exports = {
 
         if (!error && args[1]) {
             value = JSON.parse(decodeURIComponent(args[1]));
-            error = ga.appname(value);
+            error = ga.period(value);
         }
 
         // Set random uuid
@@ -215,6 +215,16 @@ module.exports = {
 
     exitGA: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
+        var error;
+
+        error = ga.checkQueue();
+
+        if (error) {
+            result.error(error, false);
+        }
+        else {
+            result.ok("Successfully exited", false);
+        }
            
     }
 };
@@ -252,7 +262,8 @@ var ga = (function() {
             }
             m_account = value;
             bAccountSet = true;
-            return "";
+            // Init storage, use GA Account as unique ID for storage
+            return storage.init(m_account);
         }
         else {
             return m_account;
@@ -267,10 +278,27 @@ var ga = (function() {
             }
             m_appName = value;
             // Init storage, use app name as unique ID for storage
-            return storage.init(m_appName);
+            // return storage.init(m_appName);
+            // Init storage with account number instead
+            return "";
         }
         else {
             return m_appName;
+        }
+    };
+
+    var period = function(value) {
+
+        if (undefined != value) {
+            if (value.length == 0) {
+                return "Need value for period";
+            }
+            // Convert value from s to ms
+            DEFAULT_DELAY = value*1000;
+            return "";
+        }
+        else {
+            return DEFAULT_DELAY;
         }
     };
 
@@ -588,7 +616,6 @@ var ga = (function() {
     // Trigger send if any data in queue
     var checkQueue = function() {
         var sPayload;
-
         sPayload = queue.top();
         if (!bSendBusy && sPayload) {
             bSendBusy = true;
@@ -600,13 +627,15 @@ var ga = (function() {
     return {
         account: account,
         appname: appname,
+        period: period,
         gauuid: gauuid,
         lastpayload: lastpayload,
         customdimension: customdimension,
         randomuuid: randomuuid,
         processtracking: processtracking,
         setUseQueue: setUseQueue,
-        getDelay: getDelay
+        getDelay: getDelay,
+        checkQueue: checkQueue
     };
 
 })();
