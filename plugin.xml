@@ -57,12 +57,7 @@
 
         <platform name="blackberry10">
         <source-file src="src/blackberry10/index.js" target-dir="GAPlugin"/>
-        <!--
-        <lib-file src="src/blackberry10/native/device/libTemplate.so" arch="device"/>
-        <lib-file src="src/blackberry10/native/simulator/libTemplate.so" arch="simulator"/>
-        -->
         <config-file target="www/config.xml" parent="/widget">
-            <!-- <feature name="com.adobe.plugins.GAPlugin" value="com.adobe.plugins.GAPlugin" /> -->
             <feature name="GAPlugin" >
                <param name="blackberry-package" value="com.adobe.plugins.GAPlugin"/>
       </feature>
