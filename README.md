@@ -1,6 +1,6 @@
 # GAPlugin
 
-> Google Analytics plugin for iOS and Android. This allows you to post usage information to your Google Analytics account.
+> Google Analytics plugin for iOS, Android, and Blackberry10. This allows you to post usage information to your Google Analytics account.
 
 ## Preparation:
 Before you can begin collecting metrics data, you need to set up a GoogleAnalytics Mobile App account so you can view them. When you do so, you will obtain an app tracking id which we'll use during session initialization. Start by going to the [Google Analytics](http://www.google.com/analytics/features/mobile-app-analytics.html) site and click on the **Create an Account** button. Once signed in, click on the **Admin** button and the **+ New Account** button under the **Accounts** tab. At the top of the resulting tab, select the **App** button in answer to the **What would you like to track?** query. Fill out the form as appropriate. Complete instructions can be found [here](http://www.google.com/analytics/features/mobile-app-analytics.html).
@@ -21,7 +21,7 @@ simply execute plugman as follows;
 	plugman install --platform [PLATFORM] --project [TARGET-PATH] --plugin [PLUGIN-PATH]
 
 	where
-		[PLATFORM] = ios or android
+		[PLATFORM] = ios, android, or blackberry10
 		[TARGET-PATH] = path to folder containing your xcode project
 		[PLUGIN-PATH] = path to folder containing this plugin
 		
