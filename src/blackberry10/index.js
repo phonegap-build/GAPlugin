@@ -324,7 +324,7 @@ var ga = (function() {
 
         if ( (undefined != value) && (undefined != index) ){ 
             // Set custom dimension for next function call
-            m_customDimension = "&cd";
+            m_customDimension += "&cd";
             // index is the index of the custom dimension in user's GA account
             m_customDimension += index;
             m_customDimension += "=";
