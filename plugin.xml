@@ -34,6 +34,19 @@
                 target-dir="libs" />
     </platform>
 
+	<platform name="amazon-fireos">
+        <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="GAPlugin" >
+        <param name="android-package" value="com.adobe.plugins.GAPlugin"/>
+      </feature>
+        </config-file>
+
+        <source-file src="src/android/GAPlugin.java"
+                target-dir="src/com/adobe/plugins" />
+        <source-file src="src/android/libGoogleAnalyticsV2.jar"
+                target-dir="libs" />
+    </platform>
+
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
           <feature name="GAPlugin">
