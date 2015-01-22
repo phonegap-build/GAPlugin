@@ -28,6 +28,10 @@
       </feature>
         </config-file>
 
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+          <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        </config-file>
+
         <source-file src="src/android/GAPlugin.java"
                 target-dir="src/com/adobe/plugins" />
         <source-file src="src/android/libGoogleAnalyticsV2.jar"
