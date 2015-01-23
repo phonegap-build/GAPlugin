@@ -34,8 +34,8 @@ public class GAPlugin extends CordovaPlugin {
 			}
 		} else if (action.equals("trackEvent")) {
 			try {
-				tracker.sendEvent(args.getString(0), args.getString(1), args.getString(2), args.getLong(3));
-				callback.success("trackEvent - category = " + args.getString(0) + "; action = " + args.getString(1) + "; label = " + args.getString(2) + "; value = " + args.getInt(3));
+				tracker.sendEvent(args.getString(0), args.getString(1), args.getString(2), args.isNull(3) ? null : args.getLong(3));
+				callback.success("trackEvent - category = " + args.getString(0) + "; action = " + args.getString(1) + "; label = " + args.getString(2) + "; value = " + args.getString(3));
 				return true;
 			} catch (final Exception e) {
 				callback.error(e.getMessage());
