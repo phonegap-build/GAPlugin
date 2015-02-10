@@ -356,7 +356,6 @@ var ga = (function() {
                 break;
 
             case "event":
-				console.log(args);
                 optionString += "&t=event";
                 optionString += getParameter(args, "ec", 0);
                 optionString += getParameter(args, "ea", 1);
