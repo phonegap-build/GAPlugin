@@ -450,7 +450,7 @@ var ga = (function() {
             // Send immediately if not using queue.
             // Otherwise, store to queue first & then trigger send
             if (bUseQueue) {
-                error = queue.enqueue(optionString);
+                error = storage.enqueuePayload(optionString);
                 if (!error){
                     // If send is already busy, all enqueued will be sent, no need to re-trigger send
                     // but that may mean no active network and connection timed-out
@@ -509,7 +509,7 @@ var ga = (function() {
                         }
                         if (bUseQueue) {
                             // Using queue: done & remove this payload from queue
-                            queue.dequeue();
+                            storage.dequeuePayload();
                             timeout_delay = DEFAULT_DELAY;
                             bSendBusy = false;
                             checkQueue();
@@ -542,7 +542,7 @@ var ga = (function() {
     // Trigger send if any data in queue
     var checkQueue = function() {
         var sPayload;
-        sPayload = queue.top();
+        sPayload = storage.peekPayload();
         if (!bSendBusy && sPayload) {
             bSendBusy = true;
             sendData(sPayload, m_fncbSendSuccess, m_fncbSendFail);
@@ -566,40 +566,9 @@ var ga = (function() {
 
 })();
 
-// Queue module for storing payload
-// An interface to the Storage module
-var queue = (function() {
-    var enqueue = function(data) {
-        var error = "";
-        error = storage.pushPayload(data);
-        return error;
-    };
-
-    // Return dequeued data
-    var dequeue = function() {
-        var value = "";
-        value = storage.popPayload();
-        return value;
-    };
-
-    // Return top item on queue, does not dequeue
-    // Return empty string if nothing on queue
-    var top = function() {
-        var value = "";
-        value = storage.topPayload();
-        return value;
-    };
-
-    return {
-        enqueue: enqueue,
-        dequeue: dequeue,
-        top: top
-    };
-
-})();
-
 //Storage module
 var storage = (function() {
+	
     // root of storage structure
     var gaStorage = {},
         error = "Storage not initialized yet.",
@@ -608,81 +577,81 @@ var storage = (function() {
     // A list specific for storing payloads of http post request to GA
     gaStorage.arrPayloads = [];
     var arrPayloads = gaStorage.arrPayloads;
-
+	
     // Storage needed to be init with a unique ID, since technically multiple apps 
     // can be using the plugin at the same time.
-    var init = function(id) {
+    this.init = function(id) {
         // At start up, retrieve previous instance of storage if any
         // If none, create one. Use JSON to convert storage structure into pure string.
-        if (id) {
+        if (!id)
+			error = "Required unique ID to initialize storage.";
+		else{
             storagename = DEFAULT_NAME + id;
-            error = "";
-        }
-        else {
-            return "Required unique ID to initialize storage.";
-        }
+			
+			if (window.localStorage) {
+				var oldStorage = window.localStorage.getItem(storagename);
+				if (oldStorage) {
+					gaStorage = JSON.parse(oldStorage);
+					// retrieve old arrPayloads
+					arrPayloads = gaStorage.arrPayloads;
+				} else
+					window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
+				error = "";
+			} else
+				error = "LocalStorage not supported.";	
+		}            
 
-        if (window.localStorage) {
-            var oldStorage = window.localStorage.getItem(storagename);
-            if (oldStorage) {
-                gaStorage = JSON.parse(oldStorage);
-                // retrieve old arrPayloads
-                arrPayloads = gaStorage.arrPayloads;
-            } else
-                window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
-            error = "";
-        } else
-            error = "LocalStorage not supported.";
         return error;
     };
     // Always keep the most updated gaStorage both in memeory and in web storage
 
     // save & load for any arbitrary key:value pair
-    var saveData = function(key, value) {
+    this.saveData = function(key, value) {
         if (error)
             return error;
         gaStorage[key] = value;
-        window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
+        saveGAStorage();
         return "";
     };
 
-    var loadData = function(key) {
+    this.loadData = function(key) {
         if (error)
-            return "";
-        return (gaStorage[key] || "");
+            return error;
+        return gaStorage[key] || "";
     };
 
     // save & load for payloads data only, use queue
-    var pushPayload = function(sPayload) {
+    this.pushPayload = function(sPayload) {
         if (error)
             return error;
         arrPayloads[arrPayloads.length] = sPayload;
-        window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
+        saveGAStorage();
         return "";
     };
 
     // load
-    var popPayload = function() {
-        if (error || (arrPayloads.length == 0))
-            return "";
+    this.popPayload = function() {
+        if (error)
+            return error;
+		else if(arrPayloads.length == 0)
+			return "The queue is empty";
         var value = arrPayloads.shift();
-        window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
+        saveGAStorage();
         return value;
     };
 
     // return first item in storage arr
-    var topPayload = function() {
-        if (error || (arrPayloads.length == 0))
-            return "";
+    this.peekPayload = function() {
+        if (error)
+            return error;
+		else if(arrPayloads.length == 0)
+			return "The queue is empty";
         return arrPayloads[0];
     };
-
-    return {
-        init: init,
-        saveData: saveData,
-        loadData: loadData,
-        pushPayload: pushPayload,
-        popPayload: popPayload,
-        topPayload: topPayload
-    };
+	
+	var saveGAStorage = function(){
+		window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
+	}
+	
+	return this;
 })();
