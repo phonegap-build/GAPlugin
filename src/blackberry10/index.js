@@ -294,7 +294,7 @@ var ga = (function() {
     var getParameter = function(oArgs, sParam, sKey) {
         var output = JSON.parse(decodeURIComponent(oArgs[sKey]));
         // All optional parameters, if not supplied by user, is set to "" in client.js
-        if (!output)
+        if (output)
             output = "&" + sParam + "=" + output;
         return output;
     };
@@ -356,6 +356,7 @@ var ga = (function() {
                 break;
 
             case "event":
+				console.log(args);
                 optionString += "&t=event";
                 optionString += getParameter(args, "ec", 0);
                 optionString += getParameter(args, "ea", 1);
