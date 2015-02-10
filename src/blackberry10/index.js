@@ -21,87 +21,59 @@ module.exports = {
     // Object properties
     uuid: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
-        var value;
-        if (args && args["value"])
-        {
-            value = JSON.parse(decodeURIComponent(args["value"]));
+        if (args && args["value"]){
+            var value = JSON.parse(decodeURIComponent(args["value"]));
             result.ok(ga.gauuid(value), false);
-        }
-        else
-        {
+        }else {
             result.ok(ga.gauuid(), false);
         }
     },
 
     gaAccount: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
-        var value;
-        if (args && args["value"]) 
-        {
-            value = JSON.parse(decodeURIComponent(args["value"]));
+        if (args && args["value"]) {
+            var value = JSON.parse(decodeURIComponent(args["value"]));
 
             var error;
             error = ga.account(value);
-            if (error) {
+            if (error)
                 result.error(error, false);
-            }
-            else {
+            else
                 result.noResult(false);
-            }
-        } 
-        else 
-        {
+        } else 
             result.ok(ga.account(), false);
-        }
     },
 
     appName: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
         var value;
-        if (args && args["value"]) 
-        {
+        if (args && args["value"]) {
             value = JSON.parse(decodeURIComponent(args["value"]));
-            var error;
-            error = ga.appname(value);
-            if (error) {
+            var error = ga.appname(value);
+            if (error)
                 result.error(error, false);
-            }
-            else {
+            else
                 result.noResult(false);
-            }
-        } 
-        else 
-        {
+        } else 
             result.ok(ga.appname(), false);
-        }
     },
 
     lastPayload: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
         if (args && args["value"]) 
-        {
             result.error("Cannot set lastPayload property", false);
-        } 
         else 
-        {
             result.ok(ga.lastpayload(), false);
-
-        }
     },
 
     useQueue: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
-        var value;
-        if (args && args["value"]) 
-        {
-            value = JSON.parse(decodeURIComponent(args["value"]));
+        if (args && args["value"]) {
+            var value = JSON.parse(decodeURIComponent(args["value"]));
             ga.setUseQueue(value);
             result.noResult(false);
-        } 
-        else 
-        {
+        } else 
             result.ok(ga.setUseQueue(), false);
-        }
     },
 
     getDelay: function (success, fail, args, env) {
@@ -111,32 +83,28 @@ module.exports = {
 
     randomUuid: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
-        var value = "";
-        if (args && args["value"])
-        {
+        if (args && args["value"]) {
             var error;
-            value = JSON.parse(decodeURIComponent(args["value"]));
+            var value = JSON.parse(decodeURIComponent(args["value"]));
             error = ga.randomuuid(value);
-            if (error) {
+            if (error)
                 result.error(error, false);
-            }
-            else {
+            else 
                 result.noResult(false);
-            }
-        }
-        else
+        } else
             result.ok(ga.randomuuid(), false);
     },
 
     // All-in-one function setting up account, uuid and appName
     initGA: function (success, fail, args, env) {
+
+        console.log("Lorem");
         var result = new PluginResult(args, env);
         var value, 
             error;
 
-        if (!args || !args[0]){
+        if (!args || !args[0])
             error = "GA account number is required";
-        }
 
          if (!error) {
             value = JSON.parse(decodeURIComponent(args[0]));
@@ -151,12 +119,10 @@ module.exports = {
         // Set random uuid
         error = ga.gauuid("");
 
-        if (error) {
+        if (error) 
             result.error(error, false);
-        }
-        else {
+        else
             result.ok("GA initialized", false);
-        }
     },
 
      trackPage: function (success, fail, args, env) {
@@ -171,20 +137,16 @@ module.exports = {
         var result = new PluginResult(args, env);
         var error;
 
-        if (!args || !args[0]){
+        if (!args || !args[0])
             error = "Need track type argument";
-        }
 
-        if (!error) {
+        if (!error)
             error = ga.processtracking(sTrackType, args);
-        }
 
-        if (error) {
+        if (error)
             result.error(sTrackType + " tracking error: " + error, false);
-        }
-        else {
+        else
             result.ok("Finished " + sTrackType + " tracking", false);
-        }
     },
 
     setVariable: function (success, fail, args, env) {
@@ -193,9 +155,8 @@ module.exports = {
             dimensionValue,
             dimensionIndex;
 
-        if (!args[0] || !args[1]){
+        if (!args[0] || !args[1])
             error = "Index and value of custom dimension are required";
-        }
 
         if (!error) {
             dimensionIndex = JSON.parse(decodeURIComponent(args[0]));
@@ -204,28 +165,22 @@ module.exports = {
             error = ga.customdimension(dimensionIndex, dimensionValue);
         }
 
-        if (error) {
+        if (error)
             result.error(error, false);
-        }
-        else {
+        else
             result.ok("Custom dimension set", false);
-        }
            
     },
 
     exitGA: function (success, fail, args, env) {
         var result = new PluginResult(args, env);
-        var error;
 
-        error = ga.checkQueue();
+        var error = ga.checkQueue();
 
-        if (error) {
+        if (error)
             result.error(error, false);
-        }
-        else {
-            result.ok("Successfully exited", false);
-        }
-           
+        else
+            result.ok("Successfully exited", false);           
     }
 };
 
@@ -257,25 +212,26 @@ var ga = (function() {
         if (undefined != value) {
             // UA-xxxxxxxx-x
             // 0123456789012 <-index
-            if ((value.length != 13) || (value.substr(0,3) != "UA-") || (value.charAt(11) != '-')) {
+            if ((value.length != 13) || (value.substr(0,3) != "UA-") || (value.charAt(11) != '-'))
                 return "Invalid GA account, should be in the format UA-xxxxxxxx-x";
-            }
+
             m_account = value;
             bAccountSet = true;
             // Init storage, use GA Account as unique ID for storage
-            return storage.init(m_account);
-        }
-        else {
+            storage.init(m_account);
+            
+            console.log(storage.loadData("someData"));
+            storage.saveData("someData");
             return m_account;
-        }
+        } else
+            return m_account;
     };
 
     var appname = function(value) {
 
         if (undefined != value) {
-            if (value.length == 0) {
+            if (value.length == 0)
                 return "AppName cannot be empty";
-            }
             m_appName = value;
             // Init storage, use app name as unique ID for storage
             // return storage.init(m_appName);
@@ -290,16 +246,13 @@ var ga = (function() {
     var period = function(value) {
 
         if (undefined != value) {
-            if (value.length == 0) {
+            if (value.length == 0)
                 return "Need value for period";
-            }
             // Convert value from s to ms
             DEFAULT_DELAY = value*1000;
             return "";
-        }
-        else {
+        } else
             return DEFAULT_DELAY;
-        }
     };
 
     var gauuid = function(value) {
@@ -311,9 +264,8 @@ var ga = (function() {
                 m_uuid = storage.loadData('uuid');
                 m_uuid = storage.saveData("");
             }
-            if ("" == m_uuid){
+            if ("" == m_uuid)
                 m_uuid = randomizeUuid();
-            }
             // store UUID
             return storage.saveData("uuid", m_uuid);
         }
@@ -321,7 +273,6 @@ var ga = (function() {
     };
 
     var customdimension = function(index, value) {
-
         if ( (undefined != value) && (undefined != index) ){ 
             // Set custom dimension for next function call
             m_customDimension = "&cd";
@@ -333,21 +284,17 @@ var ga = (function() {
             bCustomDimension = true;
             return "";
         }
-
         return m_customDimension;
     };
 
     var setUseQueue = function(value) {
         if (undefined != value) {
             value = value.toLowerCase();
-            if ("true" == value) {
+            if ("true" == value)
                 bUseQueue = true;
-            }
             return "";
-        }
-        else {
+        } else
             return bUseQueue;
-        }
     };
 
     var lastpayload = function() {
@@ -371,10 +318,8 @@ var ga = (function() {
             }
 
             return error;
-        }
-        else {
+        } else
             return bRandomUuid;
-        }
     };
 
     //***********************************
@@ -390,9 +335,7 @@ var ga = (function() {
 
         // All optional parameters, if not supplied by user, is set to "" in client.js
         if ("" != output)
-        {
-            output = "&" + sParam + "=" + output;
-        }
+        	output = "&" + sParam + "=" + output;
 
         return output;
     };
@@ -410,9 +353,7 @@ var ga = (function() {
         ret = ret.substr(0,14) + "4" + ret.substr(15);
         var ch = ret.charAt(19);
         if ('8' != ch && '9' != ch && 'a' != ch && 'b' != ch)
-        {
             ret = ret.substr(0,19) + "a" + ret.substr(20);
-        }
         return ret;
     };
 
@@ -420,12 +361,10 @@ var ga = (function() {
     var checkConnection = function() {
         // Doesn't matter what type of connection, just check if activeConnection exists
         try {
-            if (window.qnx.webplatform.device.activeConnection) {
+            if (window.qnx.webplatform.device.activeConnection)
                 return true;
-            }
-            else {
+            else
                 return false;
-            }
         }
         catch (e) {
             return false;
@@ -447,20 +386,17 @@ var ga = (function() {
             m_uuid = randomizeUuid();
         }
 
-        if (!bAccountSet) {
+        if (!bAccountSet)
             error = "Need GA account number";
-        }
 
-        if (!m_uuid) {
+        if (!m_uuid)
             error = "UUID not set. Set to empty string for a random UUID";
-        }
 
         if (!error) {
             // Removed app name because client file does not take it as an argument
             optionString = "v=1&tid=" + m_account + "&cid=" + m_uuid;
             
-            switch (trackType)
-            {
+            switch (trackType) {
                 case "pageview":
                     var parser = document.createElement('a');
                     parser.href = JSON.parse(decodeURIComponent(args[0]));
@@ -470,9 +406,8 @@ var ga = (function() {
                     optionString += parser.hostname;
                     optionString += "&dp=";
                     optionString += parser.pathname;
-
                     break;
-
+					
                 case "event":
                     optionString += "&t=event";
                     optionString += getParameter(args, "ec", 0);
@@ -519,58 +454,52 @@ var ga = (function() {
                 if (!error){
                     // If send is already busy, all enqueued will be sent, no need to re-trigger send
                     // but that may mean no active network and connection timed-out
-                    if (bSendBusy) {
+                    if (bSendBusy) 
                         error = "Network busy";
-                    }
                     else {
                         bSendBusy = true;
                         error = sendData(optionString, m_fncbSendSuccess, m_fncbSendFail);
                     }
                 }
-            }
-            else {
+            } else
                 error = sendData(optionString, m_fncbSendSuccess, m_fncbSendFail);
-            }
         }
         return error;
     };
 
     var getDelay = function () {
-        return ("Network: " + network_delay + "; Timeout: " + timeout_delay);
+        return "Network: " + network_delay + "; Timeout: " + timeout_delay;
     };
 
     // Actual http POST function, return error if any
     var sendData = function (sPayload, fncbSuccess, fncbFail) {
-        var xhr;
         bSendBusy = true;
         // If Not using queue, attempt POST immediately once only
         // If Using Queue, send and re-send til timeout, and dequeue once sent successfully
 
-        if (!sPayload) {
+        if (!sPayload)
             return "No payload data to send";
-        }
 
         // Check for active connection
         if (!checkConnection()) {
-            if (fncbFail) {
+            if (fncbFail)
                 fncbFail("No network connection");
-            }
+
             if (bUseQueue) {
                 // Using queue, re-test for connection
-                if (network_delay < MAX_NETWORK_DELAY) {
+                if (network_delay < MAX_NETWORK_DELAY)
                     network_delay *= 2;
-                }
+
                 setTimeout(function(){sendData(sPayload, fncbSuccess, fncbFail);}, network_delay);
             }
             return "No network connection";
         }
-        else {
+        else
             network_delay = DEFAULT_DELAY;
-        }
 
         // Send
         if (XMLHttpRequest && sPayload) {
-            xhr = new XMLHttpRequest();
+            var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4) {
                     if (xhr.status == 200) {
@@ -588,14 +517,14 @@ var ga = (function() {
                     }
                     else {
                         // timed-out
-                        if (fncbFail) {
+                        if (fncbFail)
                             fncbFail("Connection timed-out");
-                        }
+                        
                         if (bUseQueue) {                        
                             // Using queue, re-send
-                            if (timeout_delay < MAX_TIMEOUT_DELAY) {
+                            if (timeout_delay < MAX_TIMEOUT_DELAY)
                                 timeout_delay *= 2;
-                            }
+                            
                             setTimeout(function(){sendData(sPayload, fncbSuccess, fncbFail);}, timeout_delay);
                         }
                     }
@@ -605,11 +534,8 @@ var ga = (function() {
             xhr.open("POST","http://www.google-analytics.com/collect",true);
             xhr.send(sPayload);
         }
-        else {
-            if (fncbFail) {
-                fncbFail("No XMLHttpRequest");
-            }
-        }
+        else if (fncbFail) 
+        	fncbFail("No XMLHttpRequest");
         return "";
     };
 
@@ -680,8 +606,8 @@ var storage = (function() {
         DEFAULT_NAME = "bb10googleanalyticsplugin_",
         storagename;
     // A list specific for storing payloads of http post request to GA
-    gaStorage["arrPayloads"] = [];
-    var arrPayloads = gaStorage["arrPayloads"];
+    gaStorage.arrPayloads = [];
+    var arrPayloads = gaStorage.arrPayloads;
 
     // Storage needed to be init with a unique ID, since technically multiple apps 
     // can be using the plugin at the same time.
@@ -701,42 +627,35 @@ var storage = (function() {
             if (oldStorage) {
                 gaStorage = JSON.parse(oldStorage);
                 // retrieve old arrPayloads
-                arrPayloads = gaStorage["arrPayloads"];
-            }
-            else {
+                arrPayloads = gaStorage.arrPayloads;
+            } else
                 window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
-            }
             error = "";
-        }
-        else {
+        } else
             error = "LocalStorage not supported.";
-        }
         return error;
     };
     // Always keep the most updated gaStorage both in memeory and in web storage
 
     // save & load for any arbitrary key:value pair
     var saveData = function(key, value) {
-        if (error) {
+        if (error)
             return error;
-        }
         gaStorage[key] = value;
         window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
         return "";
     };
 
     var loadData = function(key) {
-        if (error) {
+        if (error)
             return "";
-        }
         return (gaStorage[key] || "");
     };
 
     // save & load for payloads data only, use queue
     var pushPayload = function(sPayload) {
-        if (error) {
+        if (error)
             return error;
-        }
         arrPayloads[arrPayloads.length] = sPayload;
         window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
         return "";
@@ -744,9 +663,8 @@ var storage = (function() {
 
     // load
     var popPayload = function() {
-        if (error || (arrPayloads.length == 0)) {
+        if (error || (arrPayloads.length == 0))
             return "";
-        }
         var value = arrPayloads.shift();
         window.localStorage.setItem(storagename, JSON.stringify(gaStorage));
         return value;
@@ -754,9 +672,8 @@ var storage = (function() {
 
     // return first item in storage arr
     var topPayload = function() {
-        if (error || (arrPayloads.length == 0)) {
+        if (error || (arrPayloads.length == 0))
             return "";
-        }
         return arrPayloads[0];
     };
 
