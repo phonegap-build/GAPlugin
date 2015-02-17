@@ -17,90 +17,7 @@ var _utils = require("../../lib/utils");
 
 module.exports = {
 
-    // Object properties
-    uuid: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        if (args && args.value) {
-            try {
-                ga.gauuid = JSON.parse(decodeURIComponent(args.value));
-                result.ok(ga.gauuid, false);
-            } catch (e) {
-                result.error(e, false);
-            }
-        } else
-            result.ok(ga.gauuid, false);
-    },
-
-    gaAccount: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        if (args && args.value) {
-            try {
-                ga.accountIdentifier = JSON.parse(decodeURIComponent(args.value));
-                result.noResult(false);
-            } catch (e) {
-                result.error(e, false);
-            }
-        } else
-            result.ok(ga.accountIdentifier, false);
-    },
-
-    appName: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        if (args && args.value) {
-            try {
-                ga.appName = JSON.parse(decodeURIComponent(args.value));
-                result.noResult(false);
-            } catch (e) {
-                result.error(e, false);
-            }
-        } else
-            result.ok(ga.appName, false);
-    },
-
-    lastPayload: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        if (args && args.value)
-            result.error("Cannot set lastPayload property", false);
-        else
-            try {
-                result.ok(ga.getLastPayload(), false);
-            } catch (e) {
-                result.error(e, false);
-            }
-    },
-
-    useQueue: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        if (args && args.value) {
-            try {
-                ga.useQueue = JSON.parse(decodeURIComponent(args.value));
-                result.noResult(false);
-            } catch (e) {
-                result.error(e, false);
-            }
-        } else
-            result.ok(ga.useQueue, false);
-    },
-
-    getDelay: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        result.ok(ga.getDelay(), false);
-    },
-
-    randomUuid: function(success, fail, args, env) {
-        var result = new PluginResult(args, env);
-        if (args && args.value) {
-            try {
-                ga.useRandomUUID = JSON.parse(decodeURIComponent(args.value));
-                result.noResult(false);
-            } catch (e) {
-                result.error(e, false);
-            }
-        } else
-            result.ok(ga.useRandomUUID, false);
-    },
-
-    // All-in-one function setting up account, uuid and appName
+    // All-in-one function setting up account and UUID
     initGA: function(success, fail, args, env) {
         var result = new PluginResult(args, env);
         try {
@@ -171,14 +88,8 @@ module.exports = {
 var ga = (function() {
     var m_uuid = "",
         m_account = "",
-        m_appName = "",
-        m_lastPayload = "",
         m_customDimension = "",
-        bAccountSet = false,
-        bRandomUuid = false,
-        bSendBusy = false,
-        bUseQueue = false,
-        bCustomDimension = false;
+        bSendBusy = false;
 
     var DEFAULT_DELAY = 500,
         MAX_TIMEOUT_DELAY = 10000, // max ms to retry timeouted request
@@ -197,20 +108,7 @@ var ga = (function() {
             // UA-xxxxxxxx-x
             if (!value.match(/^UA-\d{8}-\d$/))
                 throw "Invalid GA account, should be in the format UA-xxxxxxxx-x";
-
             m_account = value;
-            bAccountSet = true;
-        }
-    });
-
-    Object.defineProperty(this, 'appname', {
-        get: function() {
-            return m_appName;
-        },
-        set: function(value) {
-            if (!value)
-                throw "AppName cannot be empty";
-            m_appName = value;
         }
     });
 
@@ -234,7 +132,7 @@ var ga = (function() {
                 m_uuid = storage.loadData('uuid');
 
                 if (!m_uuid) {
-                    m_uuid = randomizeUUID();
+                    m_uuid = randomUUID();
                     storage.saveData('uuid', m_uuid);
                 }
             }
@@ -253,36 +151,9 @@ var ga = (function() {
             // Set custom dimension for next function call
             // index is the index of the custom dimension in user's GA account
             m_customDimension = "&cd" + index + "=" + value;
-            bCustomDimension = true;
         }
         return m_customDimension;
     };
-
-    Object.defineProperty(this, 'useQueue', {
-        get: function() {
-            return bUseQueue;
-        },
-        set: function(value) {
-            if (!value)
-                throw "Need value for UUID";
-            bUseQueue = value == "true";
-        }
-    });
-
-    this.getLastPayload = function() {
-        return m_lastPayload;
-    };
-
-    Object.defineProperty(this, 'randomUUID', {
-        get: function() {
-            return bRandomUuid;
-        },
-        set: function(value) {
-            if (!value)
-                throw "Need true or false value for setting randomUUID";
-            bRandomUuid = value == "true";
-        }
-    });
 
     //***********************************
     // Utilities
@@ -300,7 +171,7 @@ var ga = (function() {
     };
 
     // Return a randomly generated UUID
-    var randomizeUUID = function() {
+    var randomUUID = function() {
         //Version4(random) UUID:
         //xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal digit and y is one of 8, 9, A, or B
         //012345678901234567890123456789012345 - index
@@ -334,14 +205,9 @@ var ga = (function() {
     // Main interface to process tracking requests
     // Return error if any
     this.processTracking = function(trackType, args) {
-        if (bRandomUuid)
-            this.gauuid = randomizeUUID();
 
-        if (!bAccountSet)
-            throw "Need GA account number";
-
-        if (!this.gauuid)
-            throw "UUID not set. Set 'randomUuid' to true to auto-generate";
+        if (!m_account)
+            throw "No account identifier set.";
 
         // Removed app name because client file does not take it as an argument
         var optionString = "v=1&tid=" + m_account + "&cid=" + this.gauuid;
@@ -386,31 +252,20 @@ var ga = (function() {
         }
 
         // Check if there is a custom dimension to append to payload
-        if (bCustomDimension) {
+        if (m_customDimension)
             optionString += m_customDimension;
-            bCustomDimension = false;
-        }
-
-        m_lastPayload = optionString;
 
         // Send immediately if not using queue.
         // Otherwise, store to queue first & then trigger send
-        if (bUseQueue) {
-            storage.enqueuePayload(optionString);
-            // If send is already busy, all enqueued will be sent, no need to re-trigger send
-            // but that may mean no active network and connection timed-out
-            if (bSendBusy)
-                throw "Network busy";
-            else {
-                bSendBusy = true;
-                sendData(optionString);
-            }
-        } else
+        storage.enqueuePayload(optionString);
+        // If send is already busy, all enqueued will be sent, no need to re-trigger send
+        // but that may mean no active network and connection timed-out
+        if (bSendBusy)
+            throw "Network busy";
+        else {
+            bSendBusy = true;
             sendData(optionString);
-    };
-
-    this.getDelay = function() {
-        return "Network: " + network_delay + "; Timeout: " + timeout_delay;
+        }
     };
 
     // Actual http POST function, return error if any
@@ -425,7 +280,6 @@ var ga = (function() {
         // Check for active connection
         network_delay = DEFAULT_DELAY;
         if (!isConnectedToNetwork()) {
-            if (bUseQueue) {
                 // Using queue, re-test for connection
                 if (network_delay < MAX_NETWORK_DELAY)
                     network_delay *= 2;
@@ -434,8 +288,6 @@ var ga = (function() {
                     sendData(sPayload);
                 }, network_delay);
                 return;
-            } else
-                throw "No network connection";
         }
 
         // Send
@@ -443,21 +295,19 @@ var ga = (function() {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4) {
-                    if (xhr.status == 200 && bUseQueue) {
+                    if (xhr.status == 200) {
                         // ok, success no timeout
                         // Using queue: done & remove this payload from queue
                         storage.dequeuePayload();
                         timeout_delay = DEFAULT_DELAY;
                         bSendBusy = false;
                         this.checkQueue();
-                    } else if (bUseQueue) {
+                    } else {
                         // timed-out    
                         // Using queue, re-send
                         if (timeout_delay < MAX_TIMEOUT_DELAY)
                             timeout_delay *= 2;
-                        setTimeout(function() {
-                            sendData(sPayload);
-                        }, timeout_delay);
+                        setTimeout(function() { sendData(sPayload); }, timeout_delay);
                         return;
                     }
                 }
