@@ -1,75 +1,53 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
-  <head>
-    <meta name="viewport" content="width=320; user-scalable=no" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>PhoneGap</title>
-		<link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title">
-		<script type="text/javascript" charset="utf-8" src="cordova-2.5.0.js"></script>
-		<script type="text/javascript" src="GAPlugin.js"></script>
-		<script type="text/javascript">
-			var gaPlugin;
-		
-			function initialize() {
-    			document.addEventListener("deviceready", onDeviceReady, true);
-			}
-		
-			function onDeviceReady() {
-				gaPlugin = window.plugins.gaPlugin;
-				
-				// Note: A request for permission is REQUIRED by google. You probably want to do this just once, though, and remember the answer for subsequent runs.
-				navigator.notification.confirm('GA_PLUGIN would like your permission to collect usage data. No personal or user identifiable data will be collected.', permissionCallback, 'Attention', 'Allow,Deny');
-			}
-		
-			function permissionCallback (button) {
-				if (button === 1)
-					gaPlugin.init(nativePluginResultHandler, nativePluginErrorHandler, "UA-12345678-1", 10);
-			}
-
-			function nativePluginResultHandler (result) {
-				//alert('nativePluginResultHandler - '+result);
-				console.log('nativePluginResultHandler: '+result);
-
-			}
-        
-			function nativePluginErrorHandler (error) {
-				//alert('nativePluginErrorHandler - '+error);
-				console.log('nativePluginErrorHandler: '+error);
-			}
-			
-			function TrackButtonClicked() {
-				gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "Button", "Click", "event only", 1);
-			}
-        
-			function VariableButtonClicked() {
-				// Set a dimension based on index and value. Make sure you have added a dimension in the GA dashboard to the
-				// default property for the passed in index, and your desired scope. GA allows up to 20 dimensions for a free account
-				gaPlugin.setVariable( nativePluginResultHandler, nativePluginErrorHandler, 1, "Purple");
-
-				// dimensions are are passed to the next event sent to GA. go ahead and fire off an event with the label (key) of your choice
-				// In this example, the label for custom dimension 1 will show up in the dashboard as "favoriteColor". This is much more efficent
-				// than the old custom variable method introduced in V1, (plus you get 20 free dimensions vs 5 free custom variables)
-				gaPlugin.trackEvent( nativePluginResultHandler, nativePluginErrorHandler, "event with variable", "set variable", "favoriteColor", 1);
-			}
-        
-			function PageButtonClicked() {
-				gaPlugin.trackPage( nativePluginResultHandler, nativePluginErrorHandler, "some.url.com");
-			}
-			
-			function goingAway() {
-				gaPlugin.exit(nativePluginResultHandler, nativePluginErrorHandler);
-			}
-			
-		</script>
-
-  </head>
-  <body onload="initialize();" onunload="goingAway();" id="stage" class="theme">
-    <h1>Test Google Analytics Plugin</h1>
-    <div class="space"></div>
-    <div>
-    	<a href="#" class="btn large" onclick="TrackButtonClicked();">Track Event</a>
-    	<a href="#" class="btn large" onclick="VariableButtonClicked();">Track Event with Variable</a>
-    	<a href="#" class="btn large" onclick="PageButtonClicked();">Track Page</a>
-    </div>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+    </head>
+    <body onload="app.initialize();" onunload="app.unloadGAPlugin();">
+        <div class="app">
+            <h1>GAPlugin Test Application</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+            <div class="separator"></div>
+            <p>
+            	Tracking ID
+            	<input id="trackingID" value="UA-34205205-1"/>
+            </p>
+            <div class="separator"></div>
+            <div id="results">
+            	<button onclick="app.initializeGA();">Initialize GAPlugin</button>
+            	<button onclick="app.trackEvent();">Track Event</button>
+            	<button onclick="app.trackEventWithVariable();">Track Event With Variable</button>
+            	<button onclick="app.trackPage();">Track Page</button>
+            </div>
+            <div class="separator"></div>
+            <div id="log" />
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
 </html>

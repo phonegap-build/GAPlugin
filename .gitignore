@@ -2,3 +2,7 @@
 src/ios/.DS_Store
 
 .DS_Store
+Example/platforms
+Example/hooks
+Example/.cordova
+Example/plugins
