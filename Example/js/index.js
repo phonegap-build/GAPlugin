@@ -101,11 +101,6 @@ var app = {
 		gaPlugin.trackPage(app.nativePluginResultHandler, app.nativePluginErrorHandler, "some.url.com");
 	},
 	
-	toggleRandomUUID: function(){
-		gaPlugin.randomUuid = !gaPlugin.randomUuid;
-		this.value = "Toggle randomUUID: " + gaPlugin.randomUuid;
-	},
-	
 	// Cleanup
 	unloadGAPlugin: function() {
 		gaPlugin.exit(app.nativePluginResultHandler, app.nativePluginErrorHandler);
