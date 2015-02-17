@@ -57,4 +57,13 @@
         <framework src="CoreData.framework" />
         <framework src="SystemConfiguration.framework" />
     </platform>
+
+        <platform name="blackberry10">
+        <source-file src="src/blackberry10/index.js" target-dir="GAPlugin"/>
+        <config-file target="www/config.xml" parent="/widget">
+            <feature name="GAPlugin" >
+               <param name="blackberry-package" value="com.adobe.plugins.GAPlugin"/>
+      </feature>
+        </config-file>
+    </platform>
 </plugin>
