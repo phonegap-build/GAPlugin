@@ -150,7 +150,7 @@ var ga = (function() {
         if (typeof index !== "undefined" && value) {
             // Set custom dimension for next function call
             // index is the index of the custom dimension in user's GA account
-            m_customDimension = "&cd" + index + "=" + value;
+            m_customDimension += "&cd" + index + "=" + value;
         }
         return m_customDimension;
     };
